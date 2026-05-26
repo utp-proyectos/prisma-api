@@ -1,0 +1,29 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "A description for 'jwt.secret'"
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.String",
+      "description": "A description for 'jwt.expiration'"
+    },
+    {
+      "name": "spring.mail.username",
+      "type": "java.lang.String",
+      "description": "A description for 'spring.mail.username'"
+    },
+    {
+      "name": "spring.mail.password",
+      "type": "java.lang.String",
+      "description": "A description for 'spring.mail.password'"
+    },
+    {
+      "name": "frontend.url",
+      "type": "java.lang.String",
+      "description": "A description for 'frontend.url'"
+    }
+  ]
+}
