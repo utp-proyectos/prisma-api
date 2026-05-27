@@ -1,6 +1,9 @@
 package pe.edu.utp.prisma_api.security;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -20,6 +23,9 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
   private JwtService jwtService;
   @Autowired
   private TeamMemberRepository teamMemberRepository;
+
+  @Autowired
+  private RedisTemplate<String, Object> redisTemplate;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -41,6 +47,10 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
       handleSend(accessor);
     }
 
+    if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+      handleDisconnect(accessor);
+    }
+
     return message;
   }
 
@@ -60,6 +70,11 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
 
     String userId = jwtService.extractUserId(token);
     accessor.setUser(() -> userId); // guarda el userId en la sesión WebSocket
+
+    redisTemplate.opsForValue().set(
+        "session:" + userId,
+        userId,
+        24, TimeUnit.HOURS);
   }
 
   // verifica que el usuario pertenece al equipo del topic
@@ -94,6 +109,12 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
   private void handleSend(StompHeaderAccessor accessor) {
     if (accessor.getUser() == null) {
       throw new AccessDeniedException("No autenticado");
+    }
+  }
+
+  private void handleDisconnect(StompHeaderAccessor accessor) {
+    if (accessor.getUser() != null) {
+      redisTemplate.delete("session:" + accessor.getUser().getName());
     }
   }
 

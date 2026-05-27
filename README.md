@@ -92,6 +92,8 @@ Instalar wsl (te pedira crear usuario y contraseña al instalar ubuntu):
 wsl --install
 ```
 
+> Debes reiniciar tu pc para continuar
+
 Actualizar paquetes:
 
 ```bash
