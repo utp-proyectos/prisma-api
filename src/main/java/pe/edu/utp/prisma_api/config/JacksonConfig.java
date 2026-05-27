@@ -14,8 +14,9 @@ public class JacksonConfig {
 
   @Bean
   @Primary
-  public JsonMapper objectMapper() {
+  public JsonMapper jsonMapper() {
     return JsonMapper.builder()
+        .findAndAddModules()
         .changeDefaultPropertyInclusion(include -> include.withValueInclusion(JsonInclude.Include.NON_NULL)
             .withContentInclusion(JsonInclude.Include.USE_DEFAULTS))
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

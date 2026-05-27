@@ -18,6 +18,8 @@ import tools.jackson.databind.json.JsonMapper;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+  @Autowired
+  private JsonMapper jsonMapper;
 
   @Autowired
   private WebSocketChannelInterceptor channelInterceptor;
@@ -42,8 +44,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public boolean configureMessageConverters(List<MessageConverter> converters) {
-    JsonMapper jsonMapper = JsonMapper.builder().build();
-
     JacksonJsonMessageConverter converter = new JacksonJsonMessageConverter(jsonMapper);
 
     converters.add(converter);
