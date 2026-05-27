@@ -54,7 +54,6 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     return message;
   }
 
-  // valida el JWT cuando el cliente se conecta
   private void handleConnect(StompHeaderAccessor accessor) {
     String token = accessor.getFirstNativeHeader("Authorization");
 
@@ -69,7 +68,7 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     }
 
     String userId = jwtService.extractUserId(token);
-    accessor.setUser(() -> userId); // guarda el userId en la sesión WebSocket
+    accessor.setUser(() -> userId);
 
     redisTemplate.opsForValue().set(
         "session:" + userId,
@@ -77,13 +76,11 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
         24, TimeUnit.HOURS);
   }
 
-  // verifica que el usuario pertenece al equipo del topic
   private void handleSubscribe(StompHeaderAccessor accessor) {
     String destination = accessor.getDestination();
     if (destination == null)
       return;
 
-    // topic formato: /topic/{teamId}/{projectId}/...
     String teamId = extractTeamId(destination);
     if (teamId == null)
       return;
@@ -105,7 +102,6 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     }
   }
 
-  // verifica que el usuario está autenticado para enviar mensajes
   private void handleSend(StompHeaderAccessor accessor) {
     if (accessor.getUser() == null) {
       throw new AccessDeniedException("No autenticado");
@@ -118,10 +114,8 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     }
   }
 
-  // extrae el teamId del topic: /topic/team123/project456/chat/general → team123
   private String extractTeamId(String destination) {
     String[] parts = destination.split("/");
-    // partes: ["", "topic", "team123", "project456", ...]
     if (parts.length >= 3 && destination.startsWith("/topic/")) {
       return parts[2];
     }
