@@ -1,15 +1,11 @@
 package pe.edu.utp.prisma_api.domain.team;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import pe.edu.utp.prisma_api.domain.project.Project;
 
 @Data
 @NoArgsConstructor
@@ -20,9 +16,15 @@ public class Team {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
+
+  @Column(name = "name", nullable = false)
   private String name;
-  private String description;
-  private String avatar;
-  private LocalDate createdAt;
-  private LocalDate updatedAt;
+
+  // Muchos a muchos con usuarios a través de TeamMember
+  @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+  private List<TeamMember> members;
+
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "team_id")
+  private List<Project> projects;
 }

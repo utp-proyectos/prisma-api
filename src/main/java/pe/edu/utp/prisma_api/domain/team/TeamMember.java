@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.domain.team;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,7 +37,9 @@ public class TeamMember {
   private Team team;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "role", nullable = false)
   private TeamRole role;
 
+  @Column(name = "joined_at", nullable = false)
   private LocalDate joinedAt;
 }
