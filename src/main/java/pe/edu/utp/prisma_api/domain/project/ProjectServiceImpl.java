@@ -1,13 +1,9 @@
 package pe.edu.utp.prisma_api.domain.project;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
 import pe.edu.utp.prisma_api.domain.project.dto.ProjectHomeDTO;
 import pe.edu.utp.prisma_api.domain.task.TaskRepository;
@@ -79,9 +75,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 1. Calcular métricas de Kanban
         // Contamos las tareas totales, las completadas y calculamos el porcentaje
-        long total = taskRepository.countByColumn_Kanban_Project_Id(projectId);
-        long completed = taskRepository.countByColumn_Kanban_Project_IdAndColumn_Type(projectId,
-                ColumnType.COMPLETED);
+        long total = taskRepository.countAllTasksByProjectId(projectId);
+        long completed = taskRepository.countCompletedTasksByProjectId(projectId);
         long remaining = total - completed;
 
         double percentage = (total > 0) ? ((double) completed / total) * 100 : 0;

@@ -15,5 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
     List<Project> findRecentProjectsByUserId(String userId);
 
     // Para obtener proyectos por equipo
+    @Query("SELECT p FROM Team t JOIN t.projects p WHERE t.id = :teamId")
     List<Project> findByTeamId(String teamId);
 }
