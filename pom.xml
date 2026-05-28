@@ -176,6 +176,8 @@
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok</artifactId>
 								</path>
+                <path>
+</path>
 							</annotationProcessorPaths>
 						</configuration>
 					</execution>
@@ -191,6 +193,7 @@
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok</artifactId>
 								</path>
+                
 							</annotationProcessorPaths>
 						</configuration>
 					</execution>
