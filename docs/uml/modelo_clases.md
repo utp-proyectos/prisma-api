@@ -122,7 +122,6 @@ classDiagram
     %% Relaciones de Kanban y Tareas
     Kanban "1" *-- "*" ColumnKanban : organiza
     ColumnKanban "1" *-- "*" Task : contiene
-    User "1" --> "*" Kanban : crea
 
     %% Relaciones de Tareas y Asignaciones
     Task "1" *-- "*" TaskAssignment : asignada_en
