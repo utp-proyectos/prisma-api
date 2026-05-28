@@ -20,6 +20,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
   @Autowired
   private UserRepository userRepository;
+
   @Autowired
   private JwtService jwtService;
 
