@@ -1,5 +1,6 @@
 package pe.edu.utp.prisma_api.domain.kanban;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -30,5 +31,5 @@ public class Kanban {
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "kanban_id")
-    private List<ColumnKanban> columns;
+    private List<ColumnKanban> columns = new ArrayList<>();
 }
