@@ -11,25 +11,29 @@ import pe.edu.utp.prisma_api.domain.board.dto.BoardResponseDTO;
 @Mapper(componentModel = "spring")
 public interface BoardMapper {
 
-  // Entidad → DTO ligero (para listas, create, move, etc.)
+  // 1. Entidad → DTO ligero (BoardResponseDTO)
+  @Mapping(source = "id", target = "id")
   @Mapping(source = "folder.id", target = "folderId")
   @Mapping(source = "project.id", target = "projectId")
-  @Mapping(source = "creator.id", target = "teamMemberId") // creator es TeamMember
+  @Mapping(source = "creator.id", target = "teamMemberId")
+  @Mapping(source = "private", target = "isPrivate") // Mapea el getter 'isPrivate()' de Lombok
   BoardResponseDTO toResponse(Board board);
 
-  // Entidad → DTO pesado (solo para abrir el editor)
+  // 2. Entidad → DTO pesado (BoardDetailDTO)
+  @Mapping(source = "id", target = "id")
   @Mapping(source = "folder.id", target = "folderId")
   @Mapping(source = "project.id", target = "projectId")
-  @Mapping(source = "creator.id", target = "teamMemberId") // creator es TeamMember
+  @Mapping(source = "creator.id", target = "teamMemberId")
+  @Mapping(source = "private", target = "isPrivate") // Mapea el getter 'isPrivate()' de Lombok
   BoardDetailDTO toDetailDto(Board board);
 
-  // DTO → Entidad (solo campos planos: name, konvaData)
-  // Las relaciones (project, creator, folder) se asignan manualmente en el
-  // servicio
+  // 3. DTO → Entidad (BoardRequestDTO)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "project", ignore = true)
-  @Mapping(target = "creator", ignore = true) // TeamMember se asigna en el servicio
+  @Mapping(target = "creator", ignore = true)
   @Mapping(target = "folder", ignore = true)
-  @Mapping(target = "isPrivate", ignore = true)
+  @Mapping(target = "private", ignore = true) // Se ignora porque BoardRequestDTO no tiene este campo
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
   void toEntity(BoardRequestDTO dto, @MappingTarget Board board);
 }
