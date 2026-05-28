@@ -31,7 +31,6 @@ public interface BoardMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "project", ignore = true)
   @Mapping(target = "creator", ignore = true)
-  @Mapping(target = "folder", ignore = true)
   @Mapping(target = "private", ignore = true) // Se ignora porque BoardRequestDTO no tiene este campo
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
