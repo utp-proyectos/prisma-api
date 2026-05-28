@@ -41,10 +41,6 @@ public class Task {
     @Column(name = "priority", nullable = false)
     private Priority priority;
 
-    @ManyToOne
-    @Column(name = "created_by_id")
-    private User createdBy;
-
     // Muchos a muchos
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskAssignment> assignments;

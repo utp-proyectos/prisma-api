@@ -4,7 +4,10 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pe.edu.utp.prisma_api.domain.board.Board;
+import pe.edu.utp.prisma_api.domain.calendar.model.CalendarEvent;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
+import pe.edu.utp.prisma_api.domain.message.ChatMessage;
 
 @Data
 @Entity
@@ -29,4 +32,16 @@ public class Project {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     private List<Kanban> kanbans;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    private List<Board> boards;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    private List<CalendarEvent> events;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    private List<ChatMessage> messages;
 }
