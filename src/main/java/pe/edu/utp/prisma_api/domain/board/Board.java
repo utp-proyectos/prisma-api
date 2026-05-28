@@ -17,6 +17,8 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 import pe.edu.utp.prisma_api.domain.folder.Folder;
+import pe.edu.utp.prisma_api.domain.project.Project;
+import pe.edu.utp.prisma_api.domain.team.TeamMember;
 
 @Data
 @Entity
@@ -37,13 +39,13 @@ public class Board {
   @JoinColumn(name = "folder_id", nullable = true)
   private Folder folder;
 
-  // @ManyToOne
-  // @JoinColumn(name = "project_id", nullable = false)
-  // private Project project; // The natural parent of the board
+  @ManyToOne
+  @JoinColumn(name = "project_id", nullable = false)
+  private Project project; // The natural parent of the board
 
-  // @ManyToOne(fetch = FetchType.LAZY)
-  // @JoinColumn(name = "creator_id", nullable = false)
-  // private User creator;
+  @ManyToOne
+  @JoinColumn(name = "creator_id", nullable = false)
+  private TeamMember creator;
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "konva_data", columnDefinition = "jsonb")
