@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.domain.team;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.*;
