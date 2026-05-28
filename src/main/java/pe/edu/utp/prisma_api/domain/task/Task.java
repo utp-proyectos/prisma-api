@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.common.enums.Priority;
 import pe.edu.utp.prisma_api.domain.checklist.Checklist;
-import pe.edu.utp.prisma_api.domain.user.User;
 
 @Data
 @Entity

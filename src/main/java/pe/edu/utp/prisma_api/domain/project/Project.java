@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.domain.board.Board;
 import pe.edu.utp.prisma_api.domain.calendar.model.CalendarEvent;
+import pe.edu.utp.prisma_api.domain.channel.Channel;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
-import pe.edu.utp.prisma_api.domain.message.ChatMessage;
 
 @Data
 @Entity
@@ -43,5 +43,5 @@ public class Project {
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
-    private List<ChatMessage> messages;
+    private List<Channel> channels;
 }

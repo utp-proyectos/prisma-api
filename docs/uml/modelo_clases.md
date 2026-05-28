@@ -15,15 +15,21 @@ classDiagram
         +Role role
         +LocalDate createdAt
         +LocalDate updatedAt
+        +List~TeamMember~ members
+        +List~TaskAssignment~ assignments
     }
 
     class Team {
         +String id
         +String name
+        +List~TeamMember~ members
+        +List~Project~ projects
     }
 
     class TeamMember {
         +String id
+        +User user
+        +Team team
         +TeamRole role
         +LocalDate joinedAt
     }
@@ -33,12 +39,55 @@ classDiagram
         +String name
         +String description
         +String coverImageUrl
+        +List~Kanban~ kanbans
+        +List~Board~ boards
+        +List~CalendarEvent~ events
+        +List~Channel~ channels
+    }
+
+    class Folder {
+        +String id
+        +String nombre
+        +boolean isPrivate
+        +TeamMember creator
+        +Project project
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+        +List~Board~ boards
+    }
+
+    class Board {
+        +String id
+        +String name
+        +boolean isPrivate
+        +Folder folder
+        +Project project
+        +TeamMember creator
+        +String konvaData
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+    }
+
+    class CalendarEvent {
+        +Integer id
+        +String title
+        +LocalDate startDate
+        +LocalDate endDate
+        +LocalTime startTime
+        +LocalTime endTime
+        +Boolean allDay
+        +String notes
+        +Boolean active
+        +Project project
+        +User createdBy
     }
 
     class Kanban {
         +String id
         +String name
         +boolean isPrivate
+        +User creator
+        +List~ColumnKanban~ columns
     }
 
     class ColumnKanban {
@@ -46,6 +95,7 @@ classDiagram
         +String title
         +Integer position
         +ColumnType type
+        +List~Task~ tasks
     }
 
     class Task {
@@ -57,17 +107,36 @@ classDiagram
         +LocalDate dueDate
         +boolean isGroupTask
         +Priority priority
+        +List~TaskAssignment~ assignments
+        +List~Checklist~ checklists
     }
 
     class TaskAssignment {
         +String id
+        +Task task
+        +User user
         +boolean isDone
+    }
+
+    class Channel {
+        +String id
+        +String name
+        +LocalDateTime createdAt
+    }
+
+    class Message {
+        +String id
+        +String content
+        +User sender
+        +Channel channel
+        +LocalDateTime createdAt
     }
 
     class Checklist {
         +String id
         +String title
         +Priority priority
+        +List~ChecklistItem~ items
     }
 
     class ChecklistItem {
@@ -76,62 +145,34 @@ classDiagram
         +boolean isCompleted
     }
 
-    class Folder {
-        +String id
-        +String nombre
-        +boolean isPrivate
-        +LocalDateTime createdAt
-        +LocalDateTime updatedAt
-    }
-
-    class Board {
-        +String id
-        +String name
-        +boolean isPrivate
-        +String konvaData
-        +LocalDateTime createdAt
-    }
-
-    class CalendarEvent {
-        +Integer id
-        +String title
-        +LocalDate startDate
-        +LocalDate endDate
-        +Boolean allDay
-        +Boolean active
-    }
-
-    class ChatMessage {
-        +String id
-        +String sender
-        +String content
-        +String timestamp
-    }
-
-    %% Relaciones de Usuario y Equipos
-    User "1" --o "*" TeamMember : participa
-    Team "1" *-- "*" TeamMember : contiene
-    Team "1" *-- "*" Project : posee
+    %% Relaciones Principales
+    User "1" --o "*" TeamMember : members
+    Team "1" *-- "*" TeamMember : contains
+    Team "1" *-- "*" Project : projects
 
     %% Relaciones de Proyecto
-    Project "1" *-- "*" Kanban : gestiona
-    Project "1" *-- "*" Board : incluye
-    Project "1" *-- "*" CalendarEvent : programa
-    Project "1" *-- "*" ChatMessage : registra
+    Project "1" *-- "*" Kanban : kanbans
+    Project "1" *-- "*" Board : boards
+    Project "1" *-- "*" Channel : channels
+    Project "1" *-- "*" CalendarEvent : contains
 
-    %% Relaciones de Kanban y Tareas
-    Kanban "1" *-- "*" ColumnKanban : organiza
-    ColumnKanban "1" *-- "*" Task : contiene
-    User "1" --> "*" Kanban : crea
+    %% Relaciones de Organización (Folder/Board)
+    Folder "1" *-- "*" Board : boards
+    TeamMember "1" --> "*" Folder : creates
+    TeamMember "1" --> "*" Board : creates
 
-    %% Relaciones de Tareas y Asignaciones
-    Task "1" *-- "*" TaskAssignment : asignada_en
-    User "1" --o "*" TaskAssignment : responsable
-    Task "1" *-- "*" Checklist : tiene
-    Checklist "1" *-- "*" ChecklistItem : contiene
-    User "1" --> "*" Task : crea (createdBy)
+    %% Relaciones de Tareas y Kanban
+    Kanban "1" *-- "*" ColumnKanban : columns
+    ColumnKanban "1" *-- "*" Task : tasks
+    User "1" --> "*" Kanban : creator
 
-    %% Relaciones de Folder y Board
-    Folder "1" *-- "*" Board : agrupa
+    %% Relaciones de Tareas y Usuarios
+    Task "1" *-- "*" TaskAssignment : assignments
+    User "1" --o "*" TaskAssignment : assigned_to
+    Task "1" *-- "*" Checklist : checklists
+    Checklist "1" *-- "*" ChecklistItem : items
 
+    %% Relaciones de Chat
+    Channel "1" *-- "*" Message : messages
+    User "1" --> "*" Message : sends
 ```
