@@ -2,7 +2,6 @@ package pe.edu.utp.prisma_api.security.oauth2;
 
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -16,8 +15,11 @@ import pe.edu.utp.prisma_api.domain.user.UserRepository;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-  @Autowired
   private UserRepository userRepository;
+
+  public CustomOAuth2UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {

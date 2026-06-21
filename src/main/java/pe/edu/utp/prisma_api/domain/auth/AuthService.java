@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.domain.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,24 +17,27 @@ import pe.edu.utp.prisma_api.domain.auth.dto.MeResponse;
 import pe.edu.utp.prisma_api.domain.auth.dto.RegisterRequest;
 import pe.edu.utp.prisma_api.domain.user.User;
 import pe.edu.utp.prisma_api.domain.user.UserRepository;
+import pe.edu.utp.prisma_api.infraestructure.mail.MailService;
 import pe.edu.utp.prisma_api.security.jwt.JwtService;
 
 @Service
 public class AuthService {
 
-  @Autowired
-  private UserRepository userRepository;
-  // @Autowired
+  private final UserRepository userRepository;
   // private EmailVerificationRepository emailVerificationRepository;
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-  @Autowired
-  private JwtService jwtService;
-  // @Autowired
-  // private MailService mailService;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
+  private final MailService mailService;
+  private final AuthenticationManager authenticationManager;
 
-  @Autowired
-  private AuthenticationManager authenticationManager;
+  AuthService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JwtService jwtService,
+      UserRepository userRepository, MailService mailService) {
+    this.authenticationManager = authenticationManager;
+    this.passwordEncoder = passwordEncoder;
+    this.jwtService = jwtService;
+    this.userRepository = userRepository;
+    this.mailService = mailService;
+  }
 
   public AuthResponse register(RegisterRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
@@ -44,6 +46,8 @@ public class AuthService {
 
     User user = new User();
     user.setName(request.getName());
+    user.setLastName(request.getLastName());
+    user.setUsername(request.getUsername());
     user.setEmail(request.getEmail());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setProvider(AuthProvider.LOCAL);
@@ -60,7 +64,7 @@ public class AuthService {
     // emailVerificationRepository.save(verification);
 
     // envía el email de verificación
-    // mailService.sendVerificationEmail(user.getEmail(), verificationToken);
+    mailService.sendVerificationEmail(user.getEmail(), "testing token");
 
     return buildAuthResponse(user);
   }
@@ -83,7 +87,8 @@ public class AuthService {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-    return new MeResponse(user.getId(), user.getName(), user.getEmail(), user.getAvatar(), user.getRole().name());
+    return new MeResponse(user.getId(), user.getName(), user.getLastName(), user.getUsername(), user.getEmail(),
+        user.getAvatar(), user.getRole().name());
   }
 
   // public void verifyEmail(String token) {
@@ -132,6 +137,8 @@ public class AuthService {
         token,
         user.getId(),
         user.getName(),
+        user.getLastName(),
+        user.getUsername(),
         user.getEmail(),
         user.getAvatar(),
         user.getRole().name());

@@ -42,10 +42,16 @@ public class JwtService {
   }
 
   public boolean isValid(String token) {
+    System.out.println("------------------");
+    System.out.println(token);
+    System.out.println("------------------");
     try {
       getClaims(token);
       return true;
     } catch (Exception e) {
+      System.out.println("------------------");
+      System.out.println(e.getMessage());
+      System.out.println("------------------");
       return false;
     }
   }

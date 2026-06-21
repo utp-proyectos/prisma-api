@@ -2,7 +2,6 @@ package pe.edu.utp.prisma_api.security.jwt;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +18,14 @@ import pe.edu.utp.prisma_api.security.CustomUserDetailsService;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  @Autowired
-  private JwtService jwtService;
+  private final JwtService jwtService;
 
-  @Autowired
-  private CustomUserDetailsService userDetailsService;
+  private final CustomUserDetailsService userDetailsService;
+
+  public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
+    this.jwtService = jwtService;
+    this.userDetailsService = userDetailsService;
+  }
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -40,6 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     if (jwtService.isValid(token)) {
       String email = jwtService.extractEmail(token);
+      System.out.println(email);
       UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
       UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

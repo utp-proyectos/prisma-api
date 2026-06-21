@@ -2,7 +2,6 @@ package pe.edu.utp.prisma_api.security.oauth2;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -18,11 +17,13 @@ import pe.edu.utp.prisma_api.security.jwt.JwtService;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  @Autowired
   private UserRepository userRepository;
-
-  @Autowired
   private JwtService jwtService;
+
+  public OAuth2SuccessHandler(UserRepository userRepository, JwtService jwtService) {
+    this.userRepository = userRepository;
+    this.jwtService = jwtService;
+  }
 
   @Value("${frontend.url}")
   private String frontendUrl;
