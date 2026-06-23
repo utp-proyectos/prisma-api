@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -94,6 +95,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity
         .status(HttpStatus.BAD_REQUEST)
         .body(new ApiResponse<>(false, "Error de validación", errors, LocalDateTime.now()));
+  }
+
+  // JPA
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolationException(
+      DataIntegrityViolationException ex) {
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(ApiResponse.error("Violación de integridad de datos: " + ex.getMostSpecificCause().getMessage()));
   }
 
   @ExceptionHandler(Exception.class)

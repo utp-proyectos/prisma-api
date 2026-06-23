@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,21 +27,29 @@ import pe.edu.utp.prisma_api.security.oauth2.OAuth2SuccessHandler;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  @Autowired
-  private JwtAuthenticationFilter jwtAuthFilter;
+  private final JwtAuthenticationFilter jwtAuthFilter;
 
-  @Autowired
-  private CustomUserDetailsService userDetailsService;
+  private final CustomUserDetailsService userDetailsService;
 
-  @Autowired
-  private CustomOAuth2UserService oAuth2UserService;
+  private final CustomOAuth2UserService oAuth2UserService;
 
-  @Autowired
-  private OAuth2SuccessHandler oAuth2SuccessHandler;
+  private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
-  @Autowired
   @Qualifier("handlerExceptionResolver")
-  private HandlerExceptionResolver resolver;
+  private final HandlerExceptionResolver resolver;
+
+  public SecurityConfig(
+      JwtAuthenticationFilter jwtAuthFilter,
+      CustomUserDetailsService userDetailsService,
+      CustomOAuth2UserService oAuth2UserService,
+      OAuth2SuccessHandler oAuth2SuccessHandler,
+      @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+    this.jwtAuthFilter = jwtAuthFilter;
+    this.userDetailsService = userDetailsService;
+    this.oAuth2UserService = oAuth2UserService;
+    this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+    this.resolver = resolver;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -51,7 +58,6 @@ public class SecurityConfig {
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/me").authenticated()
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/oauth2/**").permitAll()
             .requestMatchers("/login/oauth2/**").permitAll()

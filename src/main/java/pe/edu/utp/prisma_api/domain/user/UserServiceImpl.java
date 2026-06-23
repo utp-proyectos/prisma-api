@@ -5,19 +5,16 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.domain.user.dto.UserResponseDTO;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     private final UserMapper userMapper;
-
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
 
     @Override
     public List<UserResponseDTO> getAll() {
