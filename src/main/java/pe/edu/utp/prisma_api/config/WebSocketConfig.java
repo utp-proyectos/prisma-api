@@ -2,7 +2,6 @@ package pe.edu.utp.prisma_api.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
@@ -12,17 +11,16 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.security.WebSocketChannelInterceptor;
 import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-  @Autowired
-  private JsonMapper jsonMapper;
-
-  @Autowired
-  private WebSocketChannelInterceptor channelInterceptor;
+  private final JsonMapper jsonMapper;
+  private final WebSocketChannelInterceptor channelInterceptor;
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {

@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import pe.edu.utp.prisma_api.common.handler.OAuth2FailureHandler;
 import pe.edu.utp.prisma_api.security.CustomUserDetailsService;
 import pe.edu.utp.prisma_api.security.jwt.JwtAuthenticationFilter;
 import pe.edu.utp.prisma_api.security.oauth2.CustomOAuth2UserService;
@@ -28,14 +29,10 @@ import pe.edu.utp.prisma_api.security.oauth2.OAuth2SuccessHandler;
 public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthFilter;
-
   private final CustomUserDetailsService userDetailsService;
-
   private final CustomOAuth2UserService oAuth2UserService;
-
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
-
-  @Qualifier("handlerExceptionResolver")
+  private final OAuth2FailureHandler oAuth2FailureHandler;
   private final HandlerExceptionResolver resolver;
 
   public SecurityConfig(
@@ -43,11 +40,13 @@ public class SecurityConfig {
       CustomUserDetailsService userDetailsService,
       CustomOAuth2UserService oAuth2UserService,
       OAuth2SuccessHandler oAuth2SuccessHandler,
+      OAuth2FailureHandler oAuth2FailureHandler,
       @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
     this.jwtAuthFilter = jwtAuthFilter;
     this.userDetailsService = userDetailsService;
     this.oAuth2UserService = oAuth2UserService;
     this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+    this.oAuth2FailureHandler = oAuth2FailureHandler;
     this.resolver = resolver;
   }
 
@@ -67,7 +66,8 @@ public class SecurityConfig {
         .oauth2Login(oauth -> oauth
             .userInfoEndpoint(userInfo -> userInfo
                 .userService(oAuth2UserService))
-            .successHandler(oAuth2SuccessHandler))
+            .successHandler(oAuth2SuccessHandler)
+            .failureHandler(oAuth2FailureHandler))
 
         .exceptionHandling(ex -> ex
             .authenticationEntryPoint(
