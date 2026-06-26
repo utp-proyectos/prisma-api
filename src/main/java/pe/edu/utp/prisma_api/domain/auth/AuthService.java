@@ -1,66 +1,60 @@
 package pe.edu.utp.prisma_api.domain.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.enums.AuthProvider;
 import pe.edu.utp.prisma_api.common.enums.Role;
 import pe.edu.utp.prisma_api.common.exception.EmailAlreadyExistsException;
 import pe.edu.utp.prisma_api.common.exception.InvalidTokenException;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
+import pe.edu.utp.prisma_api.domain.EmailVerification.EmailVerification;
+import pe.edu.utp.prisma_api.domain.EmailVerification.EmailVerificationRepository;
 import pe.edu.utp.prisma_api.domain.auth.dto.AuthResponse;
 import pe.edu.utp.prisma_api.domain.auth.dto.LoginRequest;
-import pe.edu.utp.prisma_api.domain.auth.dto.MeResponse;
+import pe.edu.utp.prisma_api.domain.auth.dto.CurrentUserResponse;
 import pe.edu.utp.prisma_api.domain.auth.dto.RegisterRequest;
 import pe.edu.utp.prisma_api.domain.user.User;
 import pe.edu.utp.prisma_api.domain.user.UserRepository;
+import pe.edu.utp.prisma_api.infraestructure.mail.MailService;
 import pe.edu.utp.prisma_api.security.jwt.JwtService;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
+  private final MailService mailService;
+  private final AuthenticationManager authenticationManager;
+  private final EmailVerificationRepository emailVerificationRepository;
 
-  @Autowired
-  private UserRepository userRepository;
-  // @Autowired
-  // private EmailVerificationRepository emailVerificationRepository;
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-  @Autowired
-  private JwtService jwtService;
-  // @Autowired
-  // private MailService mailService;
-
-  @Autowired
-  private AuthenticationManager authenticationManager;
-
-  public AuthResponse register(RegisterRequest request) {
+  public AuthResponse register(RegisterRequest request) throws MessagingException {
     if (userRepository.existsByEmail(request.getEmail())) {
       throw new EmailAlreadyExistsException(request.getEmail());
     }
 
     User user = new User();
     user.setName(request.getName());
+    user.setLastName(request.getLastName());
+    user.setUsername(request.getUsername());
     user.setEmail(request.getEmail());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setProvider(AuthProvider.LOCAL);
     user.setRole(Role.USER);
-    user.setEmailVerified(true);
+    user.setAvatar("https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg");
+    user.setEmailVerified(false);
     userRepository.save(user);
 
-    // crea y guarda el token de verificación
-    // String verificationToken = UUID.randomUUID().toString();
-    // EmailVerification verification = new EmailVerification();
-    // verification.setUser(user);
-    // verification.setToken(verificationToken);
-    // verification.setExpiresAt(LocalDateTime.now().plusHours(24));
-    // emailVerificationRepository.save(verification);
-
-    // envía el email de verificación
-    // mailService.sendVerificationEmail(user.getEmail(), verificationToken);
+    sendVerificationEmail(user);
 
     return buildAuthResponse(user);
   }
@@ -79,51 +73,64 @@ public class AuthService {
     return buildAuthResponse(user);
   }
 
-  public MeResponse getCurrentUserByEmail(String email) {
+  public CurrentUserResponse getCurrentUserByToken(String token) {
+    if (!jwtService.isValid(token)) {
+      throw new InvalidTokenException("Token inválido");
+    }
+
+    String email = jwtService.extractEmail(token);
+
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-    return new MeResponse(user.getId(), user.getName(), user.getEmail(), user.getAvatar(), user.getRole().name());
+    return new CurrentUserResponse(user.getId(), user.getName(), user.getLastName(), user.getUsername(),
+        user.getEmail(),
+        user.getAvatar(), user.getRole().name());
   }
 
-  // public void verifyEmail(String token) {
-  // EmailVerification verification =
-  // emailVerificationRepository.findByToken(token)
-  // .orElseThrow(() -> new InvalidTokenException("Token de verificación
-  // inválido"));
+  public void verifyEmail(String token) {
+    EmailVerification verification = emailVerificationRepository.findByToken(token)
+        .orElseThrow(() -> new InvalidTokenException("Token de verificación inválido"));
 
-  // if (verification.getExpiresAt().isBefore(LocalDateTime.now())) {
-  // throw new InvalidTokenException("El token de verificación ha expirado");
-  // }
+    if (verification.getExpiresAt().isBefore(LocalDateTime.now())) {
+      throw new InvalidTokenException("El token de verificación ha expirado");
+    }
 
-  // User user = verification.getUser();
-  // user.setEmailVerified(true);
-  // userRepository.save(user);
+    User user = verification.getUser();
+    user.setEmailVerified(true);
+    userRepository.save(user);
 
-  // emailVerificationRepository.delete(verification);
-  // }
+    emailVerificationRepository.delete(verification);
+  }
 
-  // public void resendVerification(String email) {
-  // User user = userRepository.findByEmail(email)
-  // .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+  public void resendVerification(String email) throws MessagingException {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-  // if (user.isEmailVerified()) {
-  // throw new InvalidTokenException("El email ya está verificado");
-  // }
+    if (user.isEmailVerified()) {
+      throw new InvalidTokenException("El email ya está verificado");
+    }
 
-  // // elimina el token anterior si existe
-  // emailVerificationRepository.findByUserId(user.getId())
-  // .ifPresent(emailVerificationRepository::delete);
+    emailVerificationRepository.findByUserId(user.getId())
+        .ifPresent(emailVerificationRepository::delete);
 
-  // String token = UUID.randomUUID().toString();
-  // EmailVerification verification = new EmailVerification();
-  // verification.setUser(user);
-  // verification.setToken(token);
-  // verification.setExpiresAt(LocalDateTime.now().plusHours(24));
-  // emailVerificationRepository.save(verification);
+    sendVerificationEmail(user);
+  }
 
-  // mailService.sendVerificationEmail(email, token);
-  // }
+  private void sendVerificationEmail(User user) throws MessagingException {
+    String token = UUID.randomUUID().toString();
+
+    EmailVerification verification = new EmailVerification();
+    verification.setUser(user);
+    verification.setToken(token);
+    verification.setExpiresAt(LocalDateTime.now().plusHours(24));
+
+    System.out.println(verification);
+
+    emailVerificationRepository.save(verification);
+
+    mailService.sendVerificationEmail(user.getEmail(), token);
+  }
 
   private AuthResponse buildAuthResponse(User user) {
     String token = jwtService.generateToken(user);
@@ -132,6 +139,8 @@ public class AuthService {
         token,
         user.getId(),
         user.getName(),
+        user.getLastName(),
+        user.getUsername(),
         user.getEmail(),
         user.getAvatar(),
         user.getRole().name());

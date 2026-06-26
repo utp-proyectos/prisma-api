@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.user;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -35,10 +36,16 @@ public class User {
   @Column(name = "name", nullable = false)
   private String name;
 
+  @Column(name = "last_name")
+  private String lastName;
+
   @Column(name = "email", nullable = false, unique = true)
   private String email;
 
-  @Column(name = "password", nullable = false)
+  @Column(name = "username", nullable = false, unique = true)
+  private String username;
+
+  @Column(name = "password")
   private String password;
 
   @Column(name = "avatar")
@@ -61,11 +68,11 @@ public class User {
 
   // Muchos a muchos
   @OneToMany(mappedBy = "user")
-  private List<TeamMember> members;
+  private List<TeamMember> members = new ArrayList<>();
 
   // Muchos a muchos
   @OneToMany(mappedBy = "user")
-  private List<TaskAssignment> assignments;
+  private List<TaskAssignment> assignments = new ArrayList<>();
 
   @PrePersist
   protected void onCreate() {

@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pe.edu.utp.prisma_api.domain.project.Project;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import pe.edu.utp.prisma_api.domain.user.User;
 
 @Entity
 @Table(name = "calendar_events")
@@ -46,11 +48,11 @@ public class CalendarEvent {
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
-    // @ManyToOne
-    // @JoinColumn(name = "project_id", nullable = false)
-    // private Project project;
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
-    // @ManyToOne
-    // @JoinColumn(name = "created_by_user_id", nullable = false)
-    // private User createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    private User createdBy;
 }

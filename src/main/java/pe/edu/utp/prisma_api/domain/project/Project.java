@@ -1,5 +1,6 @@
 package pe.edu.utp.prisma_api.domain.project;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -29,6 +30,9 @@ public class Project {
     @Column(name = "cover_image_url")
     private String coverImageUrl;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     private List<Kanban> kanbans;
@@ -44,4 +48,9 @@ public class Project {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     private List<Channel> channels;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -16,11 +15,14 @@ import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class RedisConfig {
-  @Lazy
-  @Autowired
-  private RedisSubscriber redisSubscriber;
-  @Autowired
-  private JsonMapper jsonMapper;
+
+  private final RedisSubscriber redisSubscriber;
+  private final JsonMapper jsonMapper;
+
+  public RedisConfig(@Lazy RedisSubscriber redisSubscriber, JsonMapper jsonMapper) {
+    this.redisSubscriber = redisSubscriber;
+    this.jsonMapper = jsonMapper;
+  }
 
   @Bean
   public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {

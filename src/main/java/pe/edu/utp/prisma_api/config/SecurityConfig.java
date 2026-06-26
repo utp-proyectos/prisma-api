@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import pe.edu.utp.prisma_api.common.handler.OAuth2FailureHandler;
 import pe.edu.utp.prisma_api.security.CustomUserDetailsService;
 import pe.edu.utp.prisma_api.security.jwt.JwtAuthenticationFilter;
 import pe.edu.utp.prisma_api.security.oauth2.CustomOAuth2UserService;
@@ -28,21 +28,27 @@ import pe.edu.utp.prisma_api.security.oauth2.OAuth2SuccessHandler;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  @Autowired
-  private JwtAuthenticationFilter jwtAuthFilter;
+  private final JwtAuthenticationFilter jwtAuthFilter;
+  private final CustomUserDetailsService userDetailsService;
+  private final CustomOAuth2UserService oAuth2UserService;
+  private final OAuth2SuccessHandler oAuth2SuccessHandler;
+  private final OAuth2FailureHandler oAuth2FailureHandler;
+  private final HandlerExceptionResolver resolver;
 
-  @Autowired
-  private CustomUserDetailsService userDetailsService;
-
-  @Autowired
-  private CustomOAuth2UserService oAuth2UserService;
-
-  @Autowired
-  private OAuth2SuccessHandler oAuth2SuccessHandler;
-
-  @Autowired
-  @Qualifier("handlerExceptionResolver")
-  private HandlerExceptionResolver resolver;
+  public SecurityConfig(
+      JwtAuthenticationFilter jwtAuthFilter,
+      CustomUserDetailsService userDetailsService,
+      CustomOAuth2UserService oAuth2UserService,
+      OAuth2SuccessHandler oAuth2SuccessHandler,
+      OAuth2FailureHandler oAuth2FailureHandler,
+      @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+    this.jwtAuthFilter = jwtAuthFilter;
+    this.userDetailsService = userDetailsService;
+    this.oAuth2UserService = oAuth2UserService;
+    this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+    this.oAuth2FailureHandler = oAuth2FailureHandler;
+    this.resolver = resolver;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -51,7 +57,6 @@ public class SecurityConfig {
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/me").authenticated()
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/oauth2/**").permitAll()
             .requestMatchers("/login/oauth2/**").permitAll()
@@ -65,7 +70,8 @@ public class SecurityConfig {
         .oauth2Login(oauth -> oauth
             .userInfoEndpoint(userInfo -> userInfo
                 .userService(oAuth2UserService))
-            .successHandler(oAuth2SuccessHandler))
+            .successHandler(oAuth2SuccessHandler)
+            .failureHandler(oAuth2FailureHandler))
 
         .exceptionHandling(ex -> ex
             .authenticationEntryPoint(

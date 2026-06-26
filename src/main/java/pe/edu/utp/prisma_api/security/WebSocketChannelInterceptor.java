@@ -2,7 +2,6 @@ package pe.edu.utp.prisma_api.security;
 
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -19,13 +18,16 @@ import pe.edu.utp.prisma_api.security.jwt.JwtService;
 @Component
 public class WebSocketChannelInterceptor implements ChannelInterceptor {
 
-  @Autowired
   private JwtService jwtService;
-  @Autowired
   private TeamMemberRepository teamMemberRepository;
-
-  @Autowired
   private RedisTemplate<String, Object> redisTemplate;
+
+  public WebSocketChannelInterceptor(JwtService jwtService, TeamMemberRepository teamMemberRepository,
+      RedisTemplate<String, Object> redisTemplate) {
+    this.jwtService = jwtService;
+    this.teamMemberRepository = teamMemberRepository;
+    this.redisTemplate = redisTemplate;
+  }
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
