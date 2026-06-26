@@ -19,11 +19,10 @@ import lombok.Data;
 
 import pe.edu.utp.prisma_api.domain.board.Board;
 import pe.edu.utp.prisma_api.domain.project.Project;
-import pe.edu.utp.prisma_api.domain.team.TeamMember;
 
 @Data
 @Entity
-@Table(name = "folder")
+@Table(name = "folders")
 public class Folder {
 
   @Id
@@ -32,13 +31,10 @@ public class Folder {
   private String id;
 
   @Column(nullable = false)
-  private String nombre; // nombre
+  private String name;
+
   @Column(name = "is_private", nullable = false)
   private boolean isPrivate;
-
-  @ManyToOne
-  @JoinColumn(name = "creator_id", nullable = false)
-  private TeamMember creator;
 
   @ManyToOne
   @JoinColumn(name = "project_id", nullable = false)

@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class FolderRequestDTO {
-  private String nombre;
-  private String teamMemberId;
+  private String name;
   private Boolean isPrivate;
 }
