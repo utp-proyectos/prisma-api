@@ -27,6 +27,9 @@ public class ColumnKanban {
     @Column(nullable = false)
     private Integer position;
 
+    @Column(nullable = false)
+    private boolean isFixed;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ColumnType type;

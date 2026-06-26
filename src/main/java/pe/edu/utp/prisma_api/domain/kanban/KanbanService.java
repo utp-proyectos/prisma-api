@@ -3,20 +3,18 @@ package pe.edu.utp.prisma_api.domain.kanban;
 import java.util.List;
 import java.util.Optional;
 
-import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanRequestDTO;
-import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanResponseDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.UpdateKanbanDTO;
 
 public interface KanbanService {
-    // Para el Sidebar: Listar tableros de un proyecto (ID y Nombre)
-    List<KanbanResponseDTO> findAllByProjectId(String projectId);
+    List<KanbanDTO> findAllByProjectId(String projectId);
 
-    // Para la vista principal: Obtener el tablero con todas sus columnas y tareas
-    Optional<KanbanResponseDTO> get(String id);
+    Optional<KanbanDTO> findById(String id);
 
-    // Operaciones de escritura
-    KanbanResponseDTO save(String projectId, String creatorId, KanbanRequestDTO dto);
+    KanbanDTO save(String projectId, String creadtorId, CreateKanbanDTO dto);
 
-    Optional<KanbanResponseDTO> update(String id, KanbanRequestDTO dto);
+    Optional<KanbanDTO> update(String id, UpdateKanbanDTO dto);
 
     void delete(String id);
 }

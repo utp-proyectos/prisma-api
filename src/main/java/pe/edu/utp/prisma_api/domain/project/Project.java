@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.project;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -33,21 +34,20 @@ public class Project {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
-    private List<Kanban> kanbans;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Kanban> kanbans = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
-    private List<Board> boards;
+    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
-    private List<CalendarEvent> events;
+    private List<CalendarEvent> events = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
-    private List<Channel> channels;
+    private List<Channel> channels = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

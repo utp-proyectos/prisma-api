@@ -1,79 +1,124 @@
 package pe.edu.utp.prisma_api.domain.kanban;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanRequestDTO;
-import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanResponseDTO;
+import lombok.RequiredArgsConstructor;
+import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
+import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanban;
+import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
+import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.UpdateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.project.Project;
 import pe.edu.utp.prisma_api.domain.project.ProjectRepository;
 import pe.edu.utp.prisma_api.domain.user.User;
 import pe.edu.utp.prisma_api.domain.user.UserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class KanbanServiceImpl implements KanbanService {
 
-    @Autowired
-    private KanbanRepository kanbanRepository;
-    @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private KanbanMapper kanbanMapper;
+    private final KanbanRepository kanbanRepository;
 
-    // Para obtener los kanbans de un proyecto
-    @Override
-    public List<KanbanResponseDTO> findAllByProjectId(String projectId) {
-        return projectRepository.findById(projectId)
-                .map(project -> project.getKanbans().stream()
-                        .map(kanbanMapper::toResponseDTO)
-                        .toList())
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
-    }
+    private final ProjectRepository projectRepository;
 
-    // Para obtener un kanban específico con sus columnas y tareas
+    private final UserRepository userRepository;
+
+    private final KanbanMapper kanbanMapper;
+
     @Override
-    public Optional<KanbanResponseDTO> get(String id) {
-        return kanbanRepository.findById(id).map(kanbanMapper::toResponseDTO);
+    public List<KanbanDTO> findAllByProjectId(String projectId) {
+        return kanbanMapper.toDto(
+                kanbanRepository.findByProjectId(projectId));
     }
 
     @Override
-    public KanbanResponseDTO save(String projectId, String creatorId, KanbanRequestDTO dto) {
+    public Optional<KanbanDTO> findById(String id) {
+        return kanbanRepository.findById(id)
+                .map(kanbanMapper::toDto);
+    }
+
+    @Override
+    public KanbanDTO save(String projectId, String creatorId,
+            CreateKanbanDTO dto) {
+
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado"));
 
-        User creator = userRepository.findById(creatorId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        User creator = userRepository.findById(creatorId).orElseThrow(
+                () -> new ResourceNotFoundException("Usuario no encontrado"));
 
-        // Convertimos DTO a Entidad limpia
         Kanban kanban = kanbanMapper.toEntity(dto);
         kanban.setCreator(creator);
+        kanban.setProject(project);
+        kanban.initializeDefaultBoard();
 
-        // Inicializamos las columnas básicas por defecto
-        // kanban.setColumns(createDefaultColumns());
-
-        // Al ser unidireccional, el Proyecto es el que guarda al Kanban
-        project.getKanbans().add(kanban);
-        projectRepository.save(project);
-
-        return kanbanMapper.toResponseDTO(kanban);
+        return kanbanMapper.toDto(kanbanRepository.save(kanban));
     }
 
     @Override
-    public Optional<KanbanResponseDTO> update(String id, KanbanRequestDTO dto) {
-        return kanbanRepository.findById(id).map(existingKanban -> {
-            // Actualizamos solo los campos permitidos del DTO
-            kanbanMapper.updateEntityFromDto(dto, existingKanban);
-            return kanbanMapper.toResponseDTO(kanbanRepository.save(existingKanban));
-        });
+    public Optional<KanbanDTO> update(String id,
+            UpdateKanbanDTO dto) {
+
+        return kanbanRepository.findById(id)
+                .map(existing -> {
+                    kanbanMapper.update(dto, existing);
+
+                    return kanbanMapper.toDto(
+                            kanbanRepository.save(existing));
+
+                });
+
     }
 
     @Override
     public void delete(String id) {
         kanbanRepository.deleteById(id);
+    }
+
+    // Creamos una columna por defecto
+    private List<ColumnKanban> createDefaultColumns(Kanban kanban) {
+
+        List<ColumnKanban> columns = new ArrayList<>();
+
+        columns.add(createColumn(
+                "Pendiente",
+                ColumnType.PENDING,
+                1,
+                kanban));
+
+        columns.add(createColumn(
+                "En curso",
+                ColumnType.IN_PROGRESS,
+                2,
+                kanban));
+
+        columns.add(createColumn(
+                "Completado",
+                ColumnType.COMPLETED,
+                3,
+                kanban));
+
+        return columns;
+    }
+
+    private ColumnKanban createColumn(String title,
+            ColumnType type,
+            Integer position,
+            Kanban kanban) {
+
+        ColumnKanban column = new ColumnKanban();
+
+        column.setTitle(title);
+        column.setType(type);
+        column.setPosition(position);
+        column.setKanban(kanban);
+        column.setTasks(new ArrayList<>());
+
+        return column;
     }
 }
