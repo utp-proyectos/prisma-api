@@ -9,14 +9,19 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "checklist_items")
 public class ChecklistItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private String id;
 
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false)
     private String content;
 
     @Column(name = "is_completed", nullable = false)
     private boolean isCompleted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checklist_id", nullable = false)
+    private Checklist checklist;
 }

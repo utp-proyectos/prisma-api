@@ -1,10 +1,12 @@
 package pe.edu.utp.prisma_api.domain.checklist;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.common.enums.Priority;
+import pe.edu.utp.prisma_api.domain.task.Task;
 
 @Data
 @Entity
@@ -12,19 +14,23 @@ import pe.edu.utp.prisma_api.common.enums.Priority;
 @AllArgsConstructor
 @Table(name = "checklists")
 public class Checklist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private String id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "priority", nullable = false)
+    @Column(nullable = false)
     private Priority priority;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "checklist_id")
-    private List<ChecklistItem> items;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
+
+    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChecklistItem> items = new ArrayList<>();
 }
