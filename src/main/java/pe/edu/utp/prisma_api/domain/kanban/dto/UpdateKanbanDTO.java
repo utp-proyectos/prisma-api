@@ -6,4 +6,6 @@ import lombok.Data;
 public class UpdateKanbanDTO {
     private String name;
     private boolean isPrivate;
+    private String kanbanId;
+    private String projectId;
 }
