@@ -1,5 +1,6 @@
 package pe.edu.utp.prisma_api.domain.team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -12,18 +13,18 @@ import pe.edu.utp.prisma_api.domain.project.Project;
 @Entity
 @Table(name = "teams")
 public class Team {
+
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(nullable = false)
   private String id;
 
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   private String name;
 
-  // Muchos a muchos con usuarios a través de TeamMember
-  @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-  private List<TeamMember> members;
+  @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<TeamMember> members = new ArrayList<>();
 
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-  @JoinColumn(name = "team_id")
-  private List<Project> projects;
+  @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Project> projects = new ArrayList<>();
 }

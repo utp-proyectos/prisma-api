@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public interface ProjectRepository extends JpaRepository<Project, String> {
     // Buscamos proyectos cuyo equipo tenga al usuario en su lista de miembros
     @Query("SELECT p FROM Team t JOIN t.projects p JOIN t.members m WHERE m.user.id = :userId")

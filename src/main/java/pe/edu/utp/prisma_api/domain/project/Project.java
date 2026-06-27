@@ -10,6 +10,7 @@ import pe.edu.utp.prisma_api.domain.board.Board;
 import pe.edu.utp.prisma_api.domain.calendar.model.CalendarEvent;
 import pe.edu.utp.prisma_api.domain.channel.Channel;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
+import pe.edu.utp.prisma_api.domain.team.Team;
 
 @Data
 @Entity
@@ -17,40 +18,42 @@ import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 @AllArgsConstructor
 @Table(name = "projects")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false, updatable = false)
     private String id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "description")
     private String description;
 
     @Column(name = "cover_image_url")
     private String coverImageUrl;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Kanban> kanbans = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CalendarEvent> events = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Channel> channels = new ArrayList<>();
 
     @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
     }
+
 }

@@ -7,11 +7,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDTO;
-import pe.edu.utp.prisma_api.domain.columnKanban.dto.CreateColumnDTO;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.CreateColumnKanbanDTO;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.UpdateColumnKanbanDTO;
 import pe.edu.utp.prisma_api.domain.task.TaskMapper;
 
 @Mapper(componentModel = "spring", uses = TaskMapper.class)
-public interface ColumnMapper {
+public interface ColumnKanbanMapper {
 
     ColumnKanbanDTO toDto(ColumnKanban entity);
 
@@ -20,11 +21,13 @@ public interface ColumnMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "kanban", ignore = true)
     @Mapping(target = "tasks", ignore = true)
-    ColumnKanban toEntity(CreateColumnDTO dto);
+    ColumnKanban toEntity(CreateColumnKanbanDTO dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "kanban", ignore = true)
     @Mapping(target = "tasks", ignore = true)
-    void update(CreateColumnDTO dto,
+    @Mapping(target = "fixed", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    void update(UpdateColumnKanbanDTO dto,
             @MappingTarget ColumnKanban entity);
 }

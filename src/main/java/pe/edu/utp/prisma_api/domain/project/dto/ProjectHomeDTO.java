@@ -1,7 +1,5 @@
 package pe.edu.utp.prisma_api.domain.project.dto;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Data

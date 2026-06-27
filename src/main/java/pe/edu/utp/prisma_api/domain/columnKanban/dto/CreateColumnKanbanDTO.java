@@ -4,7 +4,7 @@ import lombok.Data;
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
 
 @Data
-public class CreateColumnDTO {
+public class CreateColumnKanbanDTO {
     private String title;
     private ColumnType type;
     private Integer position;

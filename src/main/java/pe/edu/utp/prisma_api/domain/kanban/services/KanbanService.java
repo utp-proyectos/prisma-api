@@ -1,4 +1,4 @@
-package pe.edu.utp.prisma_api.domain.kanban;
+package pe.edu.utp.prisma_api.domain.kanban.services;
 
 import java.util.List;
 import java.util.Optional;
