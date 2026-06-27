@@ -48,7 +48,7 @@ public class CalendarEvent {
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
