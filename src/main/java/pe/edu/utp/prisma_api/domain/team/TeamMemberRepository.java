@@ -1,15 +1,14 @@
 package pe.edu.utp.prisma_api.domain.team;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TeamMemberRepository extends JpaRepository<TeamMember, String> {
-  Optional<TeamMember> findByUserId(String userId);
+public interface TeamMemberRepository extends JpaRepository<TeamMember, UUID> {
+  boolean existsByUserIdAndTeamId(UUID userId, UUID teamId);
 
-  Optional<TeamMember> findByTeamId(String teamId);
+  Optional<TeamMember> findByTeamId(UUID teamId);
 
-  boolean existsByUserIdAndTeamId(String userId, String teamId);
-
-  Optional<TeamMember> findByUserIdAndTeamId(String userId, String teamId);
+  Optional<TeamMember> findByUserIdAndTeamId(UUID userId, UUID teamId);
 }

@@ -1,11 +1,10 @@
 package pe.edu.utp.prisma_api.domain.team;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TeamRepository extends JpaRepository<Team, String> {
-    List<Team> findByMembersUserId(String userId);
+public interface TeamRepository extends JpaRepository<Team, UUID> {
+    List<Team> findByMembersUserId(UUID userId);
 }
-// Busca todos los equipos donde en su lista de 'members', exista un registro
-// con ese 'userId'

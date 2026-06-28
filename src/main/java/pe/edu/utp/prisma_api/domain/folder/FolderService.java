@@ -21,7 +21,11 @@ public class FolderService {
   private final ProjectRepository projectRepository;
   private final FolderMapper folderMapper;
 
+<<<<<<< HEAD
   // CREATE
+=======
+  // CREATsE — projectId viene de la URL
+>>>>>>> b133345b27ff96f88b62461a690d404694cf2159
   public FolderResponseDTO create(UUID projectId, FolderRequestDTO dto) {
     Project project = projectRepository.findById(projectId)
         .orElseThrow(() -> new EntityNotFoundException("Project not found"));

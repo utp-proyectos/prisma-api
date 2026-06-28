@@ -3,16 +3,32 @@ package pe.edu.utp.prisma_api.domain.project;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.*;
-import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pe.edu.utp.prisma_api.domain.board.Board;
 import pe.edu.utp.prisma_api.domain.calendar.model.CalendarEvent;
 import pe.edu.utp.prisma_api.domain.channel.Channel;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 import pe.edu.utp.prisma_api.domain.team.Team;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,10 +37,10 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(nullable = false, updatable = false)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false)
+
     private String name;
 
     private String description;
@@ -32,28 +48,22 @@ public class Project {
     @Column(name = "cover_image_url")
     private String coverImageUrl;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Kanban> kanbans = new ArrayList<>();
+    @OneToMany(mappedBy = "project")
+    private List<Kanban> kanbans;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Board> boards = new ArrayList<>();
+    @OneToMany(mappedBy = "project")
+    private List<Board> boards;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CalendarEvent> events = new ArrayList<>();
+    @OneToMany(mappedBy = "project")
+    private List<CalendarEvent> events;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Channel> channels = new ArrayList<>();
+    @OneToMany(mappedBy = "project")
+    private List<Channel> channels;
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

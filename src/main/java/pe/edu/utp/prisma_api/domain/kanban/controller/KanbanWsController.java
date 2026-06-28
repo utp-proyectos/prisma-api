@@ -1,0 +1,63 @@
+package pe.edu.utp.prisma_api.domain.kanban.controller;
+
+import java.security.Principal;
+import jakarta.validation.Valid;
+
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Controller;
+
+import lombok.RequiredArgsConstructor;
+import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
+import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.DeleteKanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.UpdateKanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.services.KanbanService;
+import pe.edu.utp.prisma_api.infraestructure.redis.RedisPublisher;
+
+@Controller
+@RequiredArgsConstructor
+public class KanbanWsController {
+
+    private final KanbanService kanbanService;
+    private final RedisPublisher redisPublisher;
+
+    @MessageMapping("/kanban.create")
+    public void createKanban(
+            @Valid @Payload CreateKanbanDTO dto,
+            Principal principal) {
+
+        String creatorId = principal.getName();
+        String projectId = dto.getProjectId();
+
+        KanbanDTO nuevoKanban = kanbanService.save(projectId, creatorId, dto);
+
+        String destinationTopic = "/topic/project/" + projectId + "/kanbans";
+
+        redisPublisher.publish(destinationTopic, nuevoKanban);
+    }
+
+    @MessageMapping("/kanban.update")
+    public void updateKanban(@Valid @Payload UpdateKanbanDTO dto, Principal principal) {
+
+        KanbanDTO kanbanActualizado = kanbanService.update(dto.getKanbanId(), dto)
+                .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
+
+        String destinationTopic = "/topic/project/" + dto.getProjectId() + "/kanbans";
+
+        redisPublisher.publish(destinationTopic, kanbanActualizado);
+    }
+
+    @MessageMapping("/kanban.delete")
+    public void deleteKanban(
+            @Payload DeleteKanbanDTO dto,
+            Principal principal) {
+
+        kanbanService.delete(dto.getKanbanId());
+
+        String destinationTopic = "/topic/project/" + dto.getProjectId() + "/kanbans";
+
+        redisPublisher.publish(destinationTopic, dto);
+    }
+}

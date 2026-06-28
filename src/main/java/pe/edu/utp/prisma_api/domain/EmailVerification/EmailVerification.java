@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.EmailVerification;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,14 +25,14 @@ import pe.edu.utp.prisma_api.domain.user.User;
 public class EmailVerification {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  private UUID id;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
 
   @Column(nullable = false, unique = true)
-  private String token;
+  private UUID token;
 
   @Column(nullable = false)
   private LocalDateTime expiresAt;

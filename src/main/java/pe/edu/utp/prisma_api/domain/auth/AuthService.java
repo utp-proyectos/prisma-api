@@ -88,7 +88,7 @@ public class AuthService {
         user.getAvatar(), user.getRole().name());
   }
 
-  public void verifyEmail(String token) {
+  public void verifyEmail(UUID token) {
     EmailVerification verification = emailVerificationRepository.findByToken(token)
         .orElseThrow(() -> new InvalidTokenException("Token de verificación inválido"));
 
@@ -118,14 +118,12 @@ public class AuthService {
   }
 
   private void sendVerificationEmail(User user) throws MessagingException {
-    String token = UUID.randomUUID().toString();
+    UUID token = UUID.randomUUID();
 
     EmailVerification verification = new EmailVerification();
     verification.setUser(user);
     verification.setToken(token);
     verification.setExpiresAt(LocalDateTime.now().plusHours(24));
-
-    System.out.println(verification);
 
     emailVerificationRepository.save(verification);
 

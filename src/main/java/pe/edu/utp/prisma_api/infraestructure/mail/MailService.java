@@ -1,5 +1,7 @@
 package pe.edu.utp.prisma_api.infraestructure.mail;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,7 +25,7 @@ public class MailService {
   @Value("${frontend.url}")
   private String frontendUrl;
 
-  public void sendVerificationEmail(String email, String token) throws MessagingException {
+  public void sendVerificationEmail(String email, UUID token) throws MessagingException {
     String link = frontendUrl + "/auth/verify-email?token=" + token;
 
     Context context = new Context();
@@ -34,8 +36,8 @@ public class MailService {
     send(email, "Verifica tu cuenta", html);
   }
 
-  public void sendInvitationEmail(String email, String teamName, String token) throws MessagingException {
-    String link = frontendUrl + "/auth/invitations/accept?token=" + token;
+  public void sendInvitationEmail(String email, String teamName, UUID token) throws MessagingException {
+    String link = frontendUrl + "/invitations/accept?token=" + token;
 
     Context context = new Context();
     context.setVariable("teamName", teamName);
@@ -46,7 +48,7 @@ public class MailService {
     send(email, "Te invitaron a unirte a " + teamName, html);
   }
 
-  public void sendPasswordResetEmail(String email, String token) throws MessagingException {
+  public void sendPasswordResetEmail(String email, UUID token) throws MessagingException {
     String link = frontendUrl + "/auth/reset-password?token=" + token;
 
     Context context = new Context();

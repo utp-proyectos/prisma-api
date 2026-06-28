@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.security.jwt;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,7 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-
+    System.out.println("------------------------------------");
+    System.out.println("filtro jwt");
+    System.out.println("------------------------------------");
     final String authHeader = request.getHeader("Authorization");
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -42,11 +45,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     if (jwtService.isValid(token)) {
       String email = jwtService.extractEmail(token);
-      System.out.println(email);
+      UUID userId = jwtService.extractUserId(token);
+
       UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
       UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-          userDetails,
+          userId,
           null,
           userDetails.getAuthorities());
 

@@ -1,8 +1,10 @@
 package pe.edu.utp.prisma_api.domain.user;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,78 +13,52 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pe.edu.utp.prisma_api.common.enums.AuthProvider;
 import pe.edu.utp.prisma_api.common.enums.Role;
-import pe.edu.utp.prisma_api.domain.task.TaskAssignment;
-import pe.edu.utp.prisma_api.domain.team.TeamMember;
 
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  private UUID id;
 
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   private String name;
 
   @Column(name = "last_name")
   private String lastName;
 
-  @Column(name = "email", nullable = false, unique = true)
+  @Column(nullable = false, unique = true)
   private String email;
 
-  @Column(name = "username", nullable = false, unique = true)
+  @Column(nullable = false, unique = true)
   private String username;
 
-  @Column(name = "password")
   private String password;
 
-  @Column(name = "avatar")
+  @Column(nullable = false)
   private String avatar;
 
   @Enumerated(EnumType.STRING)
   private AuthProvider provider;
 
-  @Column(name = "email_verified")
+  @Column(name = "email_verified", nullable = false)
   private boolean emailVerified;
 
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  @Column(name = "created_at", nullable = false)
-  private LocalDate createdAt;
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
-  private LocalDate updatedAt;
-
-  // Muchos a muchos
-  @OneToMany(mappedBy = "user")
-  private List<TeamMember> members = new ArrayList<>();
-
-  // Muchos a muchos
-  @OneToMany(mappedBy = "user")
-  private List<TaskAssignment> assignments = new ArrayList<>();
-
-  @PrePersist
-  protected void onCreate() {
-    this.createdAt = LocalDate.now();
-    this.updatedAt = LocalDate.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    this.updatedAt = LocalDate.now();
-  }
-
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
 }
