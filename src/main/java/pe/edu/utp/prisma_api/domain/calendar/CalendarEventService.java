@@ -13,17 +13,17 @@ public interface CalendarEventService {
 
         CalendarEvent saveEvent(UUID projectId, UUID userId, CalendarEventRequest request);
 
-        Optional<CalendarEvent> updateEvent(UUID projectId, Integer eventId, CalendarEventRequest request);
+        Optional<CalendarEvent> updateEvent(UUID projectId, UUID eventId, CalendarEventRequest request);
 
         List<CalendarEvent> findEventsByProject(UUID projectId);
 
         List<CalendarEvent> findEventsByProjectAndDateRange(
-                        String projectId,
+                        UUID projectId,
                         LocalDate startDate,
                         LocalDate endDate);
 
         List<CalendarItemDTO> getCalendarItems(
-                        String projectId,
+                        UUID projectId,
                         LocalDate startDate,
                         LocalDate endDate);
 }

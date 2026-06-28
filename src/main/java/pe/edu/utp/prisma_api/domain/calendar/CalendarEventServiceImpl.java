@@ -33,7 +33,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         return repository.findAll();
     }
 
-    public Optional<CalendarEvent> findById(Integer id) {
+    public Optional<CalendarEvent> findById(UUID id) {
         return repository.findById(id);
     }
 
@@ -41,7 +41,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         return repository.save(entity);
     }
 
-    public Optional<CalendarEvent> updateById(Integer id, CalendarEvent entity) {
+    public Optional<CalendarEvent> updateById(UUID id, CalendarEvent entity) {
         return repository.findById(id)
                 .map(existing -> {
                     entity.setId(id);
@@ -49,7 +49,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
                 });
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(UUID id) {
         CalendarEvent event = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Calendar event with id " + id + " not found"));
 
@@ -89,7 +89,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     }
 
     @Override
-    public Optional<CalendarEvent> updateEvent(UUID projectId, Integer eventId, CalendarEventRequest request) {
+    public Optional<CalendarEvent> updateEvent(UUID projectId, UUID eventId, CalendarEventRequest request) {
         validateRequest(request);
 
         return repository.findByIdAndProject_IdAndActiveTrue(eventId, projectId)
@@ -119,7 +119,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
 
     @Override
     public List<CalendarEvent> findEventsByProjectAndDateRange(
-            String projectId,
+            UUID projectId,
             LocalDate startDate,
             LocalDate endDate) {
         return repository.findByProjectAndDateRange(projectId, startDate, endDate);
@@ -127,7 +127,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
 
     @Override
     public List<CalendarItemDTO> getCalendarItems(
-            String projectId,
+            UUID projectId,
             LocalDate startDate,
             LocalDate endDate) {
         List<CalendarItemDTO> calendarItems = new ArrayList<>();

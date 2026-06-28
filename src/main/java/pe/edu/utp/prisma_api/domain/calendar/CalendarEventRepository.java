@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CalendarEventRepository extends JpaRepository<CalendarEvent, Integer> {
+public interface CalendarEventRepository extends JpaRepository<CalendarEvent, UUID> {
 
     List<CalendarEvent> findByProject_IdAndActiveTrueOrderByStartDateAsc(UUID projectId);
 
-    Optional<CalendarEvent> findByIdAndProject_IdAndActiveTrue(Integer id, UUID projectId);
+    Optional<CalendarEvent> findByIdAndProject_IdAndActiveTrue(UUID id, UUID projectId);
 
     @Query("SELECT e FROM CalendarEvent e " +
             "WHERE e.project.id = :projectId " +
@@ -23,7 +23,7 @@ public interface CalendarEventRepository extends JpaRepository<CalendarEvent, In
             "AND e.endDate >= :startDate " +
             "ORDER BY e.startDate ASC")
     List<CalendarEvent> findByProjectAndDateRange(
-            @Param("projectId") String projectId,
+            @Param("projectId") UUID projectId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 }

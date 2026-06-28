@@ -9,6 +9,8 @@ import pe.edu.utp.prisma_api.domain.project.Project;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
+
 import pe.edu.utp.prisma_api.domain.user.User;
 
 @Entity
@@ -22,7 +24,7 @@ public class CalendarEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "calendar_event_id")
-    private Integer id;
+    private UUID id;
 
     @Column(name = "title", nullable = false, length = 150)
     private String title;
