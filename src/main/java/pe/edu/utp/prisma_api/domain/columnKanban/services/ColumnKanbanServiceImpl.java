@@ -95,7 +95,7 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
         Map<UUID, ColumnKanban> map = kanban.getColumns()
                 .stream()
                 .collect(Collectors.toMap(
-                        ColumnKanban::getId,
+                        column -> column.getId(),
                         column -> column,
                         (existing, replacement) -> existing));
 
