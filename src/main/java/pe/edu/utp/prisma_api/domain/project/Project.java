@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.project;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ import pe.edu.utp.prisma_api.domain.team.Team;
 @AllArgsConstructor
 @Table(name = "projects")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

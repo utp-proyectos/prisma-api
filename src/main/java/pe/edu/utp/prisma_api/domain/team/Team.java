@@ -18,6 +18,7 @@ import pe.edu.utp.prisma_api.domain.project.Project;
 @Entity
 @Table(name = "teams")
 public class Team {
+
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;

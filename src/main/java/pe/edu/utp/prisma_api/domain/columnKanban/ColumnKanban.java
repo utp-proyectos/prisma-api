@@ -1,10 +1,12 @@
 package pe.edu.utp.prisma_api.domain.columnKanban;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
+import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 import pe.edu.utp.prisma_api.domain.task.Task;
 
 @Data
@@ -13,22 +15,29 @@ import pe.edu.utp.prisma_api.domain.task.Task;
 @AllArgsConstructor
 @Table(name = "columns")
 public class ColumnKanban {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private String id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "position")
+    @Column(nullable = false)
     private Integer position;
 
+    @Column(nullable = false)
+    private boolean isFixed;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(nullable = false)
     private ColumnType type;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "columnKanban_id")
-    private List<Task> tasks;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kanban_id", nullable = false)
+    private Kanban kanban;
+
+    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 }

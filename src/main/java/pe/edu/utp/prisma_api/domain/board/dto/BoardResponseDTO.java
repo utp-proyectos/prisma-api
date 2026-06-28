@@ -8,10 +8,10 @@ import lombok.Data;
 public class BoardResponseDTO {
   private String id;
   private String name;
+  private String description;
   private Boolean isPrivate;
+  private String thumbnailUrl;
   private String folderId;
-  private String projectId;
-  private String teamMemberId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }

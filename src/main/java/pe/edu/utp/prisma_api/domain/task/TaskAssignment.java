@@ -12,19 +12,20 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @Table(name = "task_assignments")
 public class TaskAssignment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "task_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "is_done")
-    private boolean isDone = false;
+    @Column(name = "is_done", nullable = false)
+    private boolean isDone;
 }

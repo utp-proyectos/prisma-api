@@ -11,7 +11,6 @@ public class FolderDetailDTO {
   private String id;
   private String nombre;
   private Boolean isPrivate;
-  private String teamMemberId; // creador
   private String projectId;
   private List<BoardResponseDTO> boards; // pizarras dentro del folder
   private LocalDateTime createdAt;

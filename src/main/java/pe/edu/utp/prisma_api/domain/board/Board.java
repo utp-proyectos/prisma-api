@@ -2,11 +2,9 @@ package pe.edu.utp.prisma_api.domain.board;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,11 +16,10 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import pe.edu.utp.prisma_api.domain.folder.Folder;
 import pe.edu.utp.prisma_api.domain.project.Project;
-import pe.edu.utp.prisma_api.domain.team.TeamMember;
 
 @Data
 @Entity
-@Table(name = "board")
+@Table(name = "boards")
 public class Board {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,21 +32,19 @@ public class Board {
   @Column(name = "is_private", nullable = false)
   private boolean isPrivate;
 
+  @Column(name = "description")
+  private String description;
+
+  @Column(name = "thumbnail_url")
+  private String thumbnailUrl;
+
   @ManyToOne
   @JoinColumn(name = "folder_id", nullable = true)
   private Folder folder;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "project_id", nullable = false)
-  private Project project; // The natural parent of the board
-
-  @ManyToOne
-  @JoinColumn(name = "creator_id", nullable = false)
-  private TeamMember creator;
-
-  @JdbcTypeCode(SqlTypes.JSON)
-  @Column(name = "konva_data", columnDefinition = "jsonb")
-  private String konvaData;
+  private Project project;
 
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;

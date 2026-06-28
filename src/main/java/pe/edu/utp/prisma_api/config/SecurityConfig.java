@@ -61,6 +61,10 @@ public class SecurityConfig {
             .requestMatchers("/oauth2/**").permitAll()
             .requestMatchers("/login/oauth2/**").permitAll()
             .requestMatchers("/ws/**").permitAll()
+            // testeando controloladores board
+            .requestMatchers("/api/projects/**").permitAll()
+            .requestMatchers("/api/boards/**").permitAll()
+            .requestMatchers("/api/folders/**").permitAll()
             .anyRequest().authenticated())
 
         .oauth2Login(oauth -> oauth
