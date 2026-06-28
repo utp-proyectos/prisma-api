@@ -27,6 +27,7 @@ import pe.edu.utp.prisma_api.domain.project.Project;
 @Table(name = "folders")
 public class Folder {
 
+  @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "folder_id")
   private UUID id;

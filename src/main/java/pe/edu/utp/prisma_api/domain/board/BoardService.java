@@ -24,7 +24,7 @@ public class BoardService {
   private final ProjectRepository projectRepository;
   private final BoardMapper boardMapper;
 
-  // 💾 CREATE — projectId viene de la URL, no del body
+  // CREATE
   public BoardResponseDTO create(UUID projectId, BoardRequestDTO dto) {
     Project project = projectRepository.findById(projectId)
         .orElseThrow(() -> new EntityNotFoundException("Project not found"));
@@ -47,26 +47,26 @@ public class BoardService {
   }
 
   // GET ALL
-  public List<BoardResponseDTO> getAll(String projectId, Boolean isPrivate) {
+  public List<BoardResponseDTO> getAll(UUID projectId, Boolean isPrivate) {
     List<Board> boards = boardRepository
         .findByProjectIdAndFolderIsNullAndIsPrivate(projectId, isPrivate);
     return boards.stream().map(boardMapper::toResponse).toList();
   }
 
   // FIND BY ID
-  public BoardDetailDTO findById(String id) {
+  public BoardDetailDTO findById(UUID id) {
     return boardMapper.toDetailDto(findEntityById(id));
   }
 
   // UPDATE
-  public BoardResponseDTO update(String id, BoardRequestDTO dto) {
+  public BoardResponseDTO update(UUID id, BoardRequestDTO dto) {
     Board board = findEntityById(id);
     board.setName(dto.getName());
     return boardMapper.toResponse(boardRepository.save(board));
   }
 
   // MOVE TO FOLDER
-  public BoardResponseDTO moveToFolder(String boardId, String folderId) {
+  public BoardResponseDTO moveToFolder(UUID boardId, UUID folderId) {
     Board board = findEntityById(boardId);
     Folder folder = folderRepository.findById(folderId)
         .orElseThrow(() -> new EntityNotFoundException("Folder not found"));
@@ -75,19 +75,19 @@ public class BoardService {
   }
 
   // REMOVE FROM FOLDER
-  public BoardResponseDTO removeFromFolder(String boardId) {
+  public BoardResponseDTO removeFromFolder(UUID boardId) {
     Board board = findEntityById(boardId);
     board.setFolder(null);
     return boardMapper.toResponse(boardRepository.save(board));
   }
 
   // DELETE
-  public void delete(String id) {
+  public void delete(UUID id) {
     boardRepository.delete(findEntityById(id));
   }
 
   // helper
-  private Board findEntityById(String id) {
+  private Board findEntityById(UUID id) {
     return boardRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Board not found"));
   }

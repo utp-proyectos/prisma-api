@@ -10,5 +10,5 @@ import lombok.Setter;
 public class BoardDetailDTO {
   private UUID id;
   private Boolean isPrivate;
-  private String folderId;
+  private UUID folderId;
 }
