@@ -1,10 +1,10 @@
 package pe.edu.utp.prisma_api.domain.folder.dto;
 
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.Data;
-
-@Data
+@Getter
+@Setter
 public class FolderRequestDTO {
   private String name;
   private Boolean isPrivate;

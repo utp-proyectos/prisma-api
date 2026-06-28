@@ -1,6 +1,8 @@
 package pe.edu.utp.prisma_api.domain.board;
 
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,51 +29,51 @@ public class BoardController {
 
   @PostMapping("/api/projects/{projectId}/boards")
   public ResponseEntity<BoardResponseDTO> create(
-      @PathVariable String projectId,
+      @PathVariable UUID projectId,
       @RequestBody BoardRequestDTO dto) {
     return ResponseEntity.ok(boardService.create(projectId, dto));
   }
 
   @GetMapping("/api/projects/{projectId}/boards")
   public ResponseEntity<List<BoardResponseDTO>> getAll(
-      @PathVariable String projectId,
+      @PathVariable UUID projectId,
       @RequestParam Boolean isPrivate) {
     return ResponseEntity.ok(boardService.getAll(projectId, isPrivate));
   }
 
   @GetMapping("/api/boards/{boardId}")
-  public ResponseEntity<BoardDetailDTO> findById(@PathVariable String boardId) {
+  public ResponseEntity<BoardDetailDTO> findById(@PathVariable UUID boardId) {
     return ResponseEntity.ok(boardService.findById(boardId));
   }
 
   @PatchMapping("/api/boards/{boardId}/move-to-folder")
   public ResponseEntity<BoardResponseDTO> moveToFolder(
-      @PathVariable String boardId,
-      @RequestParam String folderId) {
+      @PathVariable UUID boardId,
+      @RequestParam UUID folderId) {
     return ResponseEntity.ok(boardService.moveToFolder(boardId, folderId));
   }
 
   @PatchMapping("/api/boards/{boardId}/remove-from-folder")
-  public ResponseEntity<BoardResponseDTO> removeFromFolder(@PathVariable String boardId) {
+  public ResponseEntity<BoardResponseDTO> removeFromFolder(@PathVariable UUID boardId) {
     return ResponseEntity.ok(boardService.removeFromFolder(boardId));
   }
 
   @DeleteMapping("/api/boards/{boardId}")
-  public ResponseEntity<Void> delete(@PathVariable String boardId) {
+  public ResponseEntity<Void> delete(@PathVariable UUID boardId) {
     boardService.delete(boardId);
     return ResponseEntity.noContent().build();
   }
 
   @PatchMapping("/api/boards/{boardId}/canvas")
   public ResponseEntity<Void> saveCanvas(
-      @PathVariable String boardId,
-      @RequestBody String konvaData) {
+      @PathVariable UUID boardId,
+      @RequestBody UUID konvaData) {
     redisTemplate.opsForValue().set("canvas:" + boardId, konvaData);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/api/boards/{boardId}/canvas")
-  public ResponseEntity<String> getCanvas(@PathVariable String boardId) {
+  public ResponseEntity<String> getCanvas(@PathVariable UUID boardId) {
     Object konvaData = redisTemplate.opsForValue().get("canvas:" + boardId);
     if (konvaData == null)
       return ResponseEntity.ok(null);
