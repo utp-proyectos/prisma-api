@@ -41,9 +41,6 @@ public class TeamService {
 	}
 
 	public List<TeamSummaryResponse> getMyTeams(UUID userId) {
-		System.out.println("------------------------------------");
-		System.out.println("mis equipos");
-		System.out.println("------------------------------------");
 		return teamRepository.findByMembersUserId(userId)
 				.stream()
 				.map(t -> new TeamSummaryResponse(t.getId(), t.getName()))
@@ -51,20 +48,13 @@ public class TeamService {
 	}
 
 	public TeamDetailResponse getTeamById(UUID teamId, UUID userId) {
-		System.out.println("------------------------------------");
-		System.out.println("team by id");
-		System.out.println("------------------------------------");
 		if (!teamMemberRepository.existsByUserIdAndTeamId(userId, teamId)) {
 			throw new ResourceNotFoundException("No perteneces a este equipo");
 		}
-		System.out.println("------------------------------------");
-		System.out.println("valido usuari");
-		System.out.println("------------------------------------");
+
 		Team team = teamRepository.findById(teamId)
 				.orElseThrow(() -> new ResourceNotFoundException("Equipo no encontrado"));
-		System.out.println("------------------------------------");
-		System.out.println("se cargo el eqipo");
-		System.out.println("------------------------------------");
+
 		List<TeamMemberResponse> members = team.getMembers().stream()
 				.map(tm -> new TeamMemberResponse(tm.getUser().getId(), tm.getUser().getName(),
 						tm.getUser().getLastName(), tm.getUser().getEmail(),
@@ -72,20 +62,11 @@ public class TeamService {
 						tm.getRole()))
 				.toList();
 
-		System.out.println("------------------------------------");
-		System.out.println("se cargo los miembros");
-		System.out.println("------------------------------------");
-
 		List<ProjectResponse> projects = team.getProjects().stream()
 				.map(p -> new ProjectResponse(p.getId(), p.getName(), p.getDescription(),
 						p.getCreatedAt()))
 				.toList();
 
-		System.out.println("------------------------------------");
-		System.out.println("se cargo los proyectos");
-		System.out.println("------------------------------------");
-
 		return new TeamDetailResponse(team.getId(), team.getName(), members, projects);
-
 	}
 }

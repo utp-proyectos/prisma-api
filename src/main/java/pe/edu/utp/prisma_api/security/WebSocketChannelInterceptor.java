@@ -75,9 +75,6 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
   }
 
   private void handleSubscribe(StompHeaderAccessor accessor) {
-    System.out.println("------------------------------------");
-    System.out.println("subscribe");
-    System.out.println("------------------------------------");
     String destination = accessor.getDestination();
     if (destination == null)
       return;
@@ -104,7 +101,7 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
   }
 
   private void handleSend(StompHeaderAccessor accessor) {
-    System.out.println("aqui???????");
+
     if (accessor.getUser() == null) {
       throw new AccessDeniedException("No autenticado");
     }
