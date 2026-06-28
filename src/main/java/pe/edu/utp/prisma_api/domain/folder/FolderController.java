@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.folder;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class FolderController {
   @PostMapping("/api/projects/{projectId}/folders")
 
   public ResponseEntity<FolderResponseDTO> create(
-      @PathVariable String projectId,
+      @PathVariable UUID projectId,
       @RequestBody FolderRequestDTO dto) {
     return ResponseEntity.ok(folderService.create(projectId, dto));
   }
@@ -33,25 +34,25 @@ public class FolderController {
   @GetMapping("/api/projects/{projectId}/folders")
 
   public ResponseEntity<List<FolderResponseDTO>> getAll(
-      @PathVariable String projectId,
+      @PathVariable UUID projectId,
       @RequestParam Boolean isPrivate) {
     return ResponseEntity.ok(folderService.getAll(projectId, isPrivate));
   }
 
   @GetMapping("/api/folders/{folderId}")
-  public ResponseEntity<FolderResponseDTO> findById(@PathVariable String folderId) {
+  public ResponseEntity<FolderResponseDTO> findById(@PathVariable UUID folderId) {
     return ResponseEntity.ok(folderService.findById(folderId));
   }
 
   @PutMapping("/api/folders/{folderId}")
   public ResponseEntity<FolderResponseDTO> update(
-      @PathVariable String folderId,
+      @PathVariable UUID folderId,
       @RequestBody FolderRequestDTO dto) {
     return ResponseEntity.ok(folderService.update(folderId, dto));
   }
 
   @DeleteMapping("/api/folders/{folderId}")
-  public ResponseEntity<Void> delete(@PathVariable String folderId) {
+  public ResponseEntity<Void> delete(@PathVariable UUID folderId) {
     folderService.delete(folderId);
     return ResponseEntity.noContent().build();
   }

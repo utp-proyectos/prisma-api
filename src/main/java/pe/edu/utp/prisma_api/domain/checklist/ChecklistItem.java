@@ -1,5 +1,7 @@
 package pe.edu.utp.prisma_api.domain.checklist;
 
+import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +15,7 @@ public class ChecklistItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false)
     private String content;

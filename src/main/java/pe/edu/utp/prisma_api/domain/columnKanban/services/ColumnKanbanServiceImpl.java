@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
     private final ColumnKanbanMapper mapper;
 
     @Override
-    public List<ColumnKanbanDTO> findAllByKanban(String kanbanId) {
+    public List<ColumnKanbanDTO> findAllByKanban(UUID kanbanId) {
 
         Kanban kanban = kanbanRepository.findById(kanbanId)
                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
@@ -42,13 +43,13 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
     }
 
     @Override
-    public Optional<ColumnKanbanDTO> findById(String id) {
+    public Optional<ColumnKanbanDTO> findById(UUID id) {
         return columnRepository.findById(id)
                 .map(mapper::toDto);
     }
 
     @Override
-    public ColumnKanbanDTO save(String kanbanId, CreateColumnKanbanDTO dto) {
+    public ColumnKanbanDTO save(UUID kanbanId, CreateColumnKanbanDTO dto) {
 
         Kanban kanban = kanbanRepository.findById(kanbanId)
                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
@@ -64,7 +65,7 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
     }
 
     @Override
-    public Optional<ColumnKanbanDTO> update(String id, UpdateColumnKanbanDTO dto) {
+    public Optional<ColumnKanbanDTO> update(UUID id, UpdateColumnKanbanDTO dto) {
 
         return columnRepository.findById(id)
                 .map(column -> {
@@ -75,7 +76,7 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(UUID id) {
 
         ColumnKanban column = columnRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrado"));
@@ -87,12 +88,12 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
     }
 
     @Override
-    public void reorder(String kanbanId, List<String> columnIds) {
+    public void reorder(UUID kanbanId, List<UUID> columnIds) {
 
         Kanban kanban = kanbanRepository.findById(kanbanId)
                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
-        Map<String, ColumnKanban> map = kanban.getColumns()
+        Map<UUID, ColumnKanban> map = kanban.getColumns()
                 .stream()
                 .collect(Collectors.toMap(ColumnKanban::getId, Function.identity()));
 

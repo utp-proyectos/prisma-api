@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.domain.folder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,12 +16,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 import pe.edu.utp.prisma_api.domain.board.Board;
 import pe.edu.utp.prisma_api.domain.project.Project;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "folders")
 public class Folder {
@@ -28,7 +30,7 @@ public class Folder {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "folder_id")
-  private String id;
+  private UUID id;
 
   @Column(nullable = false)
   private String name;

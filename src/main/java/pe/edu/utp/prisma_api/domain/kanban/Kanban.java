@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.domain.kanban;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,8 @@ import pe.edu.utp.prisma_api.domain.milestone.Milestone;
 import pe.edu.utp.prisma_api.domain.project.Project;
 import pe.edu.utp.prisma_api.domain.user.User;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,7 @@ public class Kanban {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -37,10 +39,10 @@ public class Kanban {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @OneToMany(mappedBy = "kanban", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kanban")
     private List<ColumnKanban> columns = new ArrayList<>();
 
-    @OneToMany(mappedBy = "kanban", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kanban")
     private List<Milestone> milestones = new ArrayList<>();
 
     public void addColumn(String title, ColumnType type, Integer position, Boolean isFixed) {

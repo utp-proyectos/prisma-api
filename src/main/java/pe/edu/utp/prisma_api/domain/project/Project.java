@@ -53,16 +53,16 @@ public class Project {
     private Team team;
 
     @OneToMany(mappedBy = "project")
-    private List<Kanban> kanbans;
+    private List<Kanban> kanbans = new ArrayList<>();
 
     @OneToMany(mappedBy = "project")
-    private List<Board> boards;
+    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "project")
-    private List<CalendarEvent> events;
+    private List<CalendarEvent> events = new ArrayList<>();
 
     @OneToMany(mappedBy = "project")
-    private List<Channel> channels;
+    private List<Channel> channels = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

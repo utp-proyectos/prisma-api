@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.domain.kanban.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -31,19 +32,19 @@ public class KanbanServiceImpl implements KanbanService {
         private final KanbanMapper kanbanMapper;
 
         @Override
-        public List<KanbanDTO> findAllByProjectId(String projectId) {
+        public List<KanbanDTO> findAllByProjectId(UUID projectId) {
                 return kanbanMapper.toDto(
                                 kanbanRepository.findByProjectId(projectId));
         }
 
         @Override
-        public Optional<KanbanDTO> findById(String id) {
+        public Optional<KanbanDTO> findById(UUID id) {
                 return kanbanRepository.findById(id)
                                 .map(kanbanMapper::toDto);
         }
 
         @Override
-        public KanbanDTO save(String projectId, String creatorId,
+        public KanbanDTO save(UUID projectId, UUID creatorId,
                         CreateKanbanDTO dto) {
 
                 Project project = projectRepository.findById(projectId)
@@ -61,7 +62,7 @@ public class KanbanServiceImpl implements KanbanService {
         }
 
         @Override
-        public Optional<KanbanDTO> update(String id,
+        public Optional<KanbanDTO> update(UUID id,
                         UpdateKanbanDTO dto) {
 
                 return kanbanRepository.findById(id)
@@ -76,7 +77,7 @@ public class KanbanServiceImpl implements KanbanService {
         }
 
         @Override
-        public void delete(String id) {
+        public void delete(UUID id) {
                 kanbanRepository.deleteById(id);
         }
 }
