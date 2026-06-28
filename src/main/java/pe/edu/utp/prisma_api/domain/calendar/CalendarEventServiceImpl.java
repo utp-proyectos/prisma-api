@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CalendarEventServiceImpl implements CalendarEventService {
@@ -57,7 +58,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     }
 
     @Override
-    public CalendarEvent saveEvent(String projectId, String userId, CalendarEventRequest request) {
+    public CalendarEvent saveEvent(UUID projectId, UUID userId, CalendarEventRequest request) {
         validateRequest(request);
 
         Project project = projectRepository.findById(projectId)
@@ -88,7 +89,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     }
 
     @Override
-    public Optional<CalendarEvent> updateEvent(String projectId, Integer eventId, CalendarEventRequest request) {
+    public Optional<CalendarEvent> updateEvent(UUID projectId, Integer eventId, CalendarEventRequest request) {
         validateRequest(request);
 
         return repository.findByIdAndProject_IdAndActiveTrue(eventId, projectId)
@@ -112,7 +113,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     }
 
     @Override
-    public List<CalendarEvent> findEventsByProject(String projectId) {
+    public List<CalendarEvent> findEventsByProject(UUID projectId) {
         return repository.findByProject_IdAndActiveTrueOrderByStartDateAsc(projectId);
     }
 
@@ -120,8 +121,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     public List<CalendarEvent> findEventsByProjectAndDateRange(
             String projectId,
             LocalDate startDate,
-            LocalDate endDate
-    ) {
+            LocalDate endDate) {
         return repository.findByProjectAndDateRange(projectId, startDate, endDate);
     }
 
@@ -129,8 +129,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     public List<CalendarItemDTO> getCalendarItems(
             String projectId,
             LocalDate startDate,
-            LocalDate endDate
-    ) {
+            LocalDate endDate) {
         List<CalendarItemDTO> calendarItems = new ArrayList<>();
 
         List<CalendarEvent> events = repository.findByProjectAndDateRange(projectId, startDate, endDate);

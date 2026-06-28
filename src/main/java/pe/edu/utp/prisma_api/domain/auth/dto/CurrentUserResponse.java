@@ -1,5 +1,7 @@
 package pe.edu.utp.prisma_api.domain.auth.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrentUserResponse {
-  private String id;
+  private UUID id;
   private String name;
   private String lastName;
   private String username;

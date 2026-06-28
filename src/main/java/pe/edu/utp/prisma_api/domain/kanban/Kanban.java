@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanban;
+import pe.edu.utp.prisma_api.domain.project.Project;
 import pe.edu.utp.prisma_api.domain.user.User;
 
 @Data
@@ -28,6 +29,10 @@ public class Kanban {
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "kanban_id")

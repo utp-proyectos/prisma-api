@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.board;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class BoardService {
   private final BoardMapper boardMapper;
 
   // 💾 CREATE — projectId viene de la URL, no del body
-  public BoardResponseDTO create(String projectId, BoardRequestDTO dto) {
+  public BoardResponseDTO create(UUID projectId, BoardRequestDTO dto) {
     Project project = projectRepository.findById(projectId)
         .orElseThrow(() -> new EntityNotFoundException("Project not found"));
 

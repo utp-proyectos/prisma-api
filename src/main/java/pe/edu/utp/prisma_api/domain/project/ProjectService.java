@@ -1,23 +1,51 @@
 package pe.edu.utp.prisma_api.domain.project;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-import pe.edu.utp.prisma_api.domain.project.dto.ProjectHomeDTO;
+import org.springframework.stereotype.Service;
 
-public interface ProjectService {
+import lombok.RequiredArgsConstructor;
+import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
+import pe.edu.utp.prisma_api.common.exception.UnauthorizedException;
+import pe.edu.utp.prisma_api.domain.project.dto.CreateProjectRequest;
+import pe.edu.utp.prisma_api.domain.project.dto.ProjectResponse;
+import pe.edu.utp.prisma_api.domain.team.Team;
+import pe.edu.utp.prisma_api.domain.team.TeamMemberRepository;
+import pe.edu.utp.prisma_api.domain.team.TeamRepository;
 
-    Optional<Project> get(String id);
+@Service
+@RequiredArgsConstructor
+public class ProjectService {
 
-    Project save(String teamId, Project project);
+    private final ProjectRepository projectRepository;
+    private final TeamRepository teamRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
-    Optional<Project> update(String id, Project project);
+    public ProjectResponse createProject(UUID teamId, CreateProjectRequest request, UUID userId) {
 
-    void delete(String id);
+        boolean isMember = teamMemberRepository.existsByUserIdAndTeamId(userId, teamId);
 
-    List<Project> getUserRecentProjects(String userId);
+        if (!isMember) {
+            throw new UnauthorizedException("No perteneces a este equipo");
+        }
 
-    List<Project> getProjectByTeamId(String teamId);
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipo no encontrado"));
 
-    ProjectHomeDTO getProjectHomeSummary(String projectId);
+        Project project = new Project();
+        project.setName(request.getName());
+        project.setDescription(request.getDescription());
+        project.setTeam(team);
+        projectRepository.save(project);
+
+        return toDto(project);
+    }
+
+    private ProjectResponse toDto(Project project) {
+        return new ProjectResponse(
+                project.getId(),
+                project.getName(),
+                project.getDescription(),
+                project.getCreatedAt());
+    }
 }

@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.folder;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class FolderService {
   private final FolderMapper folderMapper;
 
   // CREATsE — projectId viene de la URL
-  public FolderResponseDTO create(String projectId, FolderRequestDTO dto) {
+  public FolderResponseDTO create(UUID projectId, FolderRequestDTO dto) {
     Project project = projectRepository.findById(projectId)
         .orElseThrow(() -> new EntityNotFoundException("Project not found"));
 

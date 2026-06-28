@@ -2,15 +2,32 @@ package pe.edu.utp.prisma_api.domain.project;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.*;
-import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pe.edu.utp.prisma_api.domain.board.Board;
 import pe.edu.utp.prisma_api.domain.calendar.model.CalendarEvent;
 import pe.edu.utp.prisma_api.domain.channel.Channel;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
+import pe.edu.utp.prisma_api.domain.team.Team;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,39 +35,33 @@ import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
-    private String id;
+    private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
+
     private String name;
 
-    @Column(name = "description")
     private String description;
 
     @Column(name = "cover_image_url")
     private String coverImageUrl;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project")
     private List<Kanban> kanbans;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project")
     private List<Board> boards;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project")
     private List<CalendarEvent> events;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project")
     private List<Channel> channels;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.domain.kanban;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,14 @@ public class KanbanServiceImpl implements KanbanService {
 
     // Para obtener los kanbans de un proyecto
     @Override
-    public List<KanbanResponseDTO> findAllByProjectId(String projectId) {
-        return projectRepository.findById(projectId)
-                .map(project -> project.getKanbans().stream()
-                        .map(kanbanMapper::toResponseDTO)
-                        .toList())
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+    public List<KanbanResponseDTO> findAllByProjectId(UUID projectId) {
+        // return projectRepository.findById(projectId)
+        // .map(project -> project.getKanbans().stream()
+        // .map(kanbanMapper::toResponseDTO)
+        // .toList())
+        // .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+
+        return null;
     }
 
     // Para obtener un kanban específico con sus columnas y tareas
@@ -42,7 +45,7 @@ public class KanbanServiceImpl implements KanbanService {
     }
 
     @Override
-    public KanbanResponseDTO save(String projectId, String creatorId, KanbanRequestDTO dto) {
+    public KanbanResponseDTO save(UUID projectId, UUID creatorId, KanbanRequestDTO dto) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
@@ -57,8 +60,8 @@ public class KanbanServiceImpl implements KanbanService {
         // kanban.setColumns(createDefaultColumns());
 
         // Al ser unidireccional, el Proyecto es el que guarda al Kanban
-        project.getKanbans().add(kanban);
-        projectRepository.save(project);
+        // project.getKanbans().add(kanban);
+        // projectRepository.save(project);
 
         return kanbanMapper.toResponseDTO(kanban);
     }

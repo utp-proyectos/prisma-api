@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family: sans-serif; padding: 20px;">
+  <h2>Te invitaron a un equipo</h2>
+  <p>Has sido invitado a unirte al equipo <b th:text="${teamName}"></b>.</p>
+  <a th:href="${link}"
+    style="display:inline-block; padding:12px 24px; background:#4f46e5; color:white; text-decoration:none; border-radius:8px;">
+    Aceptar invitación
+  </a>
+  <p style="color:#888; font-size:12px; margin-top:20px;">
+    Este enlace expira en 48 horas.
+  </p>
+</body>
+
+</html>

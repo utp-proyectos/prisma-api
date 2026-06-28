@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.security;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.UUID;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
@@ -12,22 +13,17 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.domain.team.TeamMemberRepository;
 import pe.edu.utp.prisma_api.security.jwt.JwtService;
 
 @Component
+@RequiredArgsConstructor
 public class WebSocketChannelInterceptor implements ChannelInterceptor {
 
-  private JwtService jwtService;
-  private TeamMemberRepository teamMemberRepository;
-  private RedisTemplate<String, Object> redisTemplate;
-
-  public WebSocketChannelInterceptor(JwtService jwtService, TeamMemberRepository teamMemberRepository,
-      RedisTemplate<String, Object> redisTemplate) {
-    this.jwtService = jwtService;
-    this.teamMemberRepository = teamMemberRepository;
-    this.redisTemplate = redisTemplate;
-  }
+  private final JwtService jwtService;
+  private final TeamMemberRepository teamMemberRepository;
+  private final RedisTemplate<String, Object> redisTemplate;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -69,26 +65,29 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
       throw new AccessDeniedException("Token inválido o expirado");
     }
 
-    String userId = jwtService.extractUserId(token);
-    accessor.setUser(() -> userId);
+    UUID userId = jwtService.extractUserId(token);
+    accessor.setUser(() -> userId.toString());
 
     redisTemplate.opsForValue().set(
         "session:" + userId,
         userId,
-        24, TimeUnit.HOURS);
+        Duration.ofHours(24));
   }
 
   private void handleSubscribe(StompHeaderAccessor accessor) {
+    System.out.println("------------------------------------");
+    System.out.println("subscribe");
+    System.out.println("------------------------------------");
     String destination = accessor.getDestination();
     if (destination == null)
       return;
 
-    String teamId = extractTeamId(destination);
+    UUID teamId = extractTeamId(destination);
     if (teamId == null)
       return;
 
-    String userId = accessor.getUser() != null
-        ? accessor.getUser().getName()
+    UUID userId = accessor.getUser() != null
+        ? UUID.fromString(accessor.getUser().getName())
         : null;
 
     if (userId == null) {
@@ -105,6 +104,7 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
   }
 
   private void handleSend(StompHeaderAccessor accessor) {
+    System.out.println("aqui???????");
     if (accessor.getUser() == null) {
       throw new AccessDeniedException("No autenticado");
     }
@@ -116,10 +116,10 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     }
   }
 
-  private String extractTeamId(String destination) {
+  private UUID extractTeamId(String destination) {
     String[] parts = destination.split("/");
     if (parts.length >= 3 && destination.startsWith("/topic/")) {
-      return parts[2];
+      return UUID.fromString(parts[2]);
     }
     return null;
   }

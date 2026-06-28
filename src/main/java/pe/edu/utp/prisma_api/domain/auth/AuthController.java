@@ -1,5 +1,7 @@
 package pe.edu.utp.prisma_api.domain.auth;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,7 +49,7 @@ public class AuthController {
   }
 
   @GetMapping("/verify-email")
-  public ResponseEntity<ApiResponse<Void>> verifyEmail(@RequestParam String token) {
+  public ResponseEntity<ApiResponse<Void>> verifyEmail(@RequestParam UUID token) {
     authService.verifyEmail(token);
     return ResponseEntity.ok(ApiResponse.ok("Email verificado correctamente",
         null));

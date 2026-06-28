@@ -1,12 +1,18 @@
 package pe.edu.utp.prisma_api.domain.team;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.domain.project.Project;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -14,16 +20,17 @@ import pe.edu.utp.prisma_api.domain.project.Project;
 public class Team {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  private UUID id;
 
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   private String name;
 
-  // Muchos a muchos con usuarios a través de TeamMember
-  @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-  private List<TeamMember> members;
+  @OneToMany(mappedBy = "team")
+  private List<TeamMember> members = new ArrayList<>();
 
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-  @JoinColumn(name = "team_id")
-  private List<Project> projects;
+  @OneToMany(mappedBy = "team")
+  private List<Project> projects = new ArrayList<>();
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 }

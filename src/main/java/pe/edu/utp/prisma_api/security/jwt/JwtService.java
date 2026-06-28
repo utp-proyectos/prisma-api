@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.security.jwt;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -24,7 +25,7 @@ public class JwtService {
 
   public String generateToken(User user) {
     return Jwts.builder()
-        .subject(user.getId())
+        .subject(user.getId().toString())
         .claim("email", user.getEmail())
         .claim("role", user.getRole().name())
         .issuedAt(new Date())
@@ -33,8 +34,8 @@ public class JwtService {
         .compact();
   }
 
-  public String extractUserId(String token) {
-    return getClaims(token).getSubject();
+  public UUID extractUserId(String token) {
+    return UUID.fromString(getClaims(token).getSubject());
   }
 
   public String extractEmail(String token) {
@@ -42,16 +43,10 @@ public class JwtService {
   }
 
   public boolean isValid(String token) {
-    System.out.println("------------------");
-    System.out.println(token);
-    System.out.println("------------------");
     try {
       getClaims(token);
       return true;
     } catch (Exception e) {
-      System.out.println("------------------");
-      System.out.println(e.getMessage());
-      System.out.println("------------------");
       return false;
     }
   }
