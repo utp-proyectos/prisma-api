@@ -1,10 +1,14 @@
 package pe.edu.utp.prisma_api.domain.board.dto;
 
-import lombok.Data;
+import java.util.UUID;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class BoardDetailDTO {
-  private String id;
+  private UUID id;
   private Boolean isPrivate;
-  private String folderId;
+  private UUID folderId;
 }

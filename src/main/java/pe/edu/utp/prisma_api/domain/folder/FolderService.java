@@ -21,7 +21,7 @@ public class FolderService {
   private final ProjectRepository projectRepository;
   private final FolderMapper folderMapper;
 
-  // CREATsE — projectId viene de la URL
+  // CREATE
   public FolderResponseDTO create(UUID projectId, FolderRequestDTO dto) {
     Project project = projectRepository.findById(projectId)
         .orElseThrow(() -> new EntityNotFoundException("Project not found"));
@@ -36,31 +36,31 @@ public class FolderService {
   }
 
   // GET ALL
-  public List<FolderResponseDTO> getAll(String projectId, Boolean isPrivate) {
+  public List<FolderResponseDTO> getAll(UUID projectId, Boolean isPrivate) {
     List<Folder> folders = folderRepository
         .findByProjectIdAndIsPrivate(projectId, isPrivate);
     return folders.stream().map(folderMapper::toResponse).toList();
   }
 
   // FIND BY ID
-  public FolderResponseDTO findById(String id) {
+  public FolderResponseDTO findById(UUID id) {
     return folderMapper.toResponse(findEntityById(id));
   }
 
   // UPDATE
-  public FolderResponseDTO update(String id, FolderRequestDTO dto) {
+  public FolderResponseDTO update(UUID id, FolderRequestDTO dto) {
     Folder folder = findEntityById(id);
     folder.setName(dto.getName());
     return folderMapper.toResponse(folderRepository.save(folder));
   }
 
   // DELETE
-  public void delete(String id) {
+  public void delete(UUID id) {
     folderRepository.delete(findEntityById(id));
   }
 
   // helper
-  private Folder findEntityById(String id) {
+  private Folder findEntityById(UUID id) {
     return folderRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Folder not found"));
   }
