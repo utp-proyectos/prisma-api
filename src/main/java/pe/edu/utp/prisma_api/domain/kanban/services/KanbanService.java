@@ -2,19 +2,20 @@ package pe.edu.utp.prisma_api.domain.kanban.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.UpdateKanbanDTO;
 
 public interface KanbanService {
-    List<KanbanDTO> findAllByProjectId(String projectId);
+    List<KanbanDTO> findAllByProjectId(UUID projectId);
 
-    Optional<KanbanDTO> findById(String id);
+    Optional<KanbanDTO> findById(UUID id);
 
-    KanbanDTO save(String projectId, String creadtorId, CreateKanbanDTO dto);
+    KanbanDTO save(UUID projectId, UUID creadtorId, CreateKanbanDTO dto);
 
-    Optional<KanbanDTO> update(String id, UpdateKanbanDTO dto);
+    Optional<KanbanDTO> update(UUID id, UpdateKanbanDTO dto);
 
-    void delete(String id);
+    void delete(UUID id);
 }

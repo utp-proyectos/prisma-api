@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.kanban.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class KanbanController {
 
         @GetMapping("/project/{projectId}")
         public ResponseEntity<ApiResponse<List<KanbanDTO>>> findAllByProject(
-                        @PathVariable String projectId) {
+                        @PathVariable UUID projectId) {
 
                 return ResponseEntity.ok(
                                 ApiResponse.ok(
@@ -32,7 +33,7 @@ public class KanbanController {
 
         @GetMapping("/{id}")
         public ResponseEntity<ApiResponse<KanbanDTO>> findById(
-                        @PathVariable String id) {
+                        @PathVariable UUID id) {
 
                 KanbanDTO kanban = kanbanService.findById(id)
                                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));

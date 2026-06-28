@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.columnKanban;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,77 +29,77 @@ import pe.edu.utp.prisma_api.domain.columnKanban.services.ColumnKanbanService;
 @RequiredArgsConstructor
 public class ColumnKanbanController {
 
-    private final ColumnKanbanService columnService;
+        private final ColumnKanbanService columnService;
 
-    @GetMapping("/kanban/{kanbanId}")
-    public ResponseEntity<ApiResponse<List<ColumnKanbanDTO>>> findAllByKanban(
-            @PathVariable String kanbanId) {
+        @GetMapping("/kanban/{kanbanId}")
+        public ResponseEntity<ApiResponse<List<ColumnKanbanDTO>>> findAllByKanban(
+                        @PathVariable UUID kanbanId) {
 
-        return ResponseEntity.ok(
-                ApiResponse.ok(
-                        columnService.findAllByKanban(kanbanId)));
-    }
+                return ResponseEntity.ok(
+                                ApiResponse.ok(
+                                                columnService.findAllByKanban(kanbanId)));
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ColumnKanbanDTO>> findById(
-            @PathVariable String id) {
+        @GetMapping("/{id}")
+        public ResponseEntity<ApiResponse<ColumnKanbanDTO>> findById(
+                        @PathVariable UUID id) {
 
-        ColumnKanbanDTO column = columnService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
+                ColumnKanbanDTO column = columnService.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
 
-        return ResponseEntity.ok(
-                ApiResponse.ok(column));
-    }
+                return ResponseEntity.ok(
+                                ApiResponse.ok(column));
+        }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<ColumnKanbanDTO>> create(
-            @RequestParam String kanbanId,
-            @Valid @RequestBody CreateColumnKanbanDTO dto) {
+        @PostMapping
+        public ResponseEntity<ApiResponse<ColumnKanbanDTO>> create(
+                        @RequestParam UUID kanbanId,
+                        @Valid @RequestBody CreateColumnKanbanDTO dto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        ApiResponse.ok(
-                                "Columna creada correctamente",
-                                columnService.save(kanbanId, dto)));
-    }
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(
+                                                ApiResponse.ok(
+                                                                "Columna creada correctamente",
+                                                                columnService.save(kanbanId, dto)));
+        }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ColumnKanbanDTO>> update(
-            @PathVariable String id,
-            @Valid @RequestBody UpdateColumnKanbanDTO dto) {
+        @PutMapping("/{id}")
+        public ResponseEntity<ApiResponse<ColumnKanbanDTO>> update(
+                        @PathVariable UUID id,
+                        @Valid @RequestBody UpdateColumnKanbanDTO dto) {
 
-        ColumnKanbanDTO column = columnService.update(id, dto)
-                .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
+                ColumnKanbanDTO column = columnService.update(id, dto)
+                                .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
 
-        return ResponseEntity.ok(
-                ApiResponse.ok(
-                        "Columna actualizada correctamente",
-                        column));
-    }
+                return ResponseEntity.ok(
+                                ApiResponse.ok(
+                                                "Columna actualizada correctamente",
+                                                column));
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(
-            @PathVariable String id) {
+        @DeleteMapping("/{id}")
+        public ResponseEntity<ApiResponse<Void>> delete(
+                        @PathVariable UUID id) {
 
-        columnService.delete(id);
+                columnService.delete(id);
 
-        return ResponseEntity.ok(
-                ApiResponse.ok(
-                        "Columna eliminada correctamente",
-                        null));
-    }
+                return ResponseEntity.ok(
+                                ApiResponse.ok(
+                                                "Columna eliminada correctamente",
+                                                null));
+        }
 
-    @PutMapping("/kanban/{kanbanId}/reorder")
-    public ResponseEntity<ApiResponse<Void>> reorder(
-            @PathVariable String kanbanId,
-            @RequestBody List<String> columnIds) {
+        @PutMapping("/kanban/{kanbanId}/reorder")
+        public ResponseEntity<ApiResponse<Void>> reorder(
+                        @PathVariable UUID kanbanId,
+                        @RequestBody List<UUID> columnIds) {
 
-        columnService.reorder(kanbanId, columnIds);
+                columnService.reorder(kanbanId, columnIds);
 
-        return ResponseEntity.ok(
-                ApiResponse.ok(
-                        "Columnas reordenadas correctamente",
-                        null));
-    }
+                return ResponseEntity.ok(
+                                ApiResponse.ok(
+                                                "Columnas reordenadas correctamente",
+                                                null));
+        }
 
 }

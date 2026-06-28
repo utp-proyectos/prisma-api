@@ -1,6 +1,8 @@
 package pe.edu.utp.prisma_api.domain.kanban.controller;
 
 import java.security.Principal;
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,8 +30,8 @@ public class KanbanWsController {
             @Valid @Payload CreateKanbanDTO dto,
             Principal principal) {
 
-        String creatorId = principal.getName();
-        String projectId = dto.getProjectId();
+        UUID creatorId = UUID.fromString(principal.getName());
+        UUID projectId = dto.getProjectId();
 
         KanbanDTO nuevoKanban = kanbanService.save(projectId, creatorId, dto);
 

@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pe.edu.utp.prisma_api.domain.user.User;
+
+import java.util.UUID;
+
 import jakarta.persistence.*;
 
 @Data
@@ -16,7 +19,7 @@ public class TaskAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
-    private String id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)

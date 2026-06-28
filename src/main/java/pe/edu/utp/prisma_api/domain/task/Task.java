@@ -3,6 +3,8 @@ package pe.edu.utp.prisma_api.domain.task;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.common.enums.Priority;
@@ -10,7 +12,8 @@ import pe.edu.utp.prisma_api.domain.checklist.Checklist;
 import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanban;
 import pe.edu.utp.prisma_api.domain.milestone.Milestone;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +23,7 @@ public class Task {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(nullable = false)
-  private String id;
+  private UUID id;
 
   @Column(nullable = false)
   private String title;
@@ -49,9 +52,9 @@ public class Task {
   @JoinColumn(name = "milestone_id")
   private Milestone milestone;
 
-  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "task")
   private List<TaskAssignment> assignments = new ArrayList<>();
 
-  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "task")
   private List<Checklist> checklists = new ArrayList<>();
 }

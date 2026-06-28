@@ -1,9 +1,11 @@
 package pe.edu.utp.prisma_api.domain.kanban.dto;
 
+import java.util.UUID;
+
 import lombok.Data;
 
 @Data
 public class DeleteKanbanDTO {
-    private String projectId;
-    private String kanbanId;
+    private UUID projectId;
+    private UUID kanbanId;
 }
