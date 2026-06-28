@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
 
         return kanban.getColumns()
                 .stream()
-                .sorted(Comparator.comparing(ColumnKanban::getPosition))
+                .sorted(Comparator.comparing(column -> column.getPosition()))
                 .map(mapper::toDto)
                 .toList();
     }
@@ -95,7 +94,10 @@ public class ColumnKanbanServiceImpl implements ColumnKanbanService {
 
         Map<UUID, ColumnKanban> map = kanban.getColumns()
                 .stream()
-                .collect(Collectors.toMap(ColumnKanban::getId, Function.identity()));
+                .collect(Collectors.toMap(
+                        ColumnKanban::getId,
+                        column -> column,
+                        (existing, replacement) -> existing));
 
         for (int i = 0; i < columnIds.size(); i++) {
 
