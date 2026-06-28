@@ -1,7 +1,8 @@
 package pe.edu.utp.prisma_api.domain.calendar;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.domain.calendar.dto.CalendarEventRequest;
 import pe.edu.utp.prisma_api.domain.calendar.dto.CalendarItemDTO;
 import pe.edu.utp.prisma_api.domain.calendar.enums.CalendarItemType;
@@ -18,16 +19,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CalendarEventServiceImpl implements CalendarEventService {
 
-    @Autowired
-    private CalendarEventRepository repository;
+    private final CalendarEventRepository repository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public List<CalendarEvent> findAll() {
         return repository.findAll();
