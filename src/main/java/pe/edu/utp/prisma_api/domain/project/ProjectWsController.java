@@ -23,7 +23,6 @@ public class ProjectWsController {
   public void createProject(
       @Valid @Payload CreateProjectRequest request,
       Principal principal) {
-
     ProjectResponse project = projectService.createProject(
         request.getTeamId(), request, UUID.fromString(principal.getName()));
 
