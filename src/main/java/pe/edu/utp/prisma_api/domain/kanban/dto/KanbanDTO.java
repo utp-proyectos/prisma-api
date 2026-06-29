@@ -3,13 +3,15 @@ package pe.edu.utp.prisma_api.domain.kanban.dto;
 import java.util.List;
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.*;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDTO;
 
-@Data
+@Getter
+@Setter
 public class KanbanDTO {
-
     private UUID id;
+
+    private UUID projectId;
 
     private String name;
 

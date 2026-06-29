@@ -46,7 +46,7 @@ public class KanbanWsController {
         KanbanDTO kanbanActualizado = kanbanService.update(dto.getKanbanId(), dto)
                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
-        String destinationTopic = "/topic/project/" + dto.getProjectId() + "/kanbans";
+        String destinationTopic = "/topic/project/" + kanbanActualizado.getProjectId() + "/kanbans";
 
         redisPublisher.publish(destinationTopic, kanbanActualizado);
     }
@@ -56,9 +56,12 @@ public class KanbanWsController {
             @Payload DeleteKanbanDTO dto,
             Principal principal) {
 
+        KanbanDTO kanban = kanbanService.findById(dto.getKanbanId())
+                .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
+
         kanbanService.delete(dto.getKanbanId());
 
-        String destinationTopic = "/topic/project/" + dto.getProjectId() + "/kanbans";
+        String destinationTopic = "/topic/project/" + kanban.getProjectId() + "/kanbans";
 
         redisPublisher.publish(destinationTopic, dto);
     }
