@@ -30,12 +30,16 @@ public class KanbanWsController {
             @Valid @Payload CreateKanbanDTO dto,
             Principal principal) {
 
+        System.out.println(dto.getPrivateSwitch());
+
         UUID creatorId = UUID.fromString(principal.getName());
         UUID projectId = dto.getProjectId();
 
+        UUID teamId = dto.getTeamId();
+
         KanbanDTO nuevoKanban = kanbanService.save(projectId, creatorId, dto);
 
-        String destinationTopic = "/topic/project/" + projectId + "/kanbans";
+        String destinationTopic = "/topic/" + teamId + "/" + projectId + "/kanbans";
 
         redisPublisher.publish(destinationTopic, nuevoKanban);
     }

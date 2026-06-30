@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -16,13 +15,12 @@ import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.services.KanbanService;
 
 @RestController
-@RequestMapping("/api/kanbans")
 @RequiredArgsConstructor
 public class KanbanController {
 
         private final KanbanService kanbanService;
 
-        @GetMapping("/project/{projectId}")
+        @GetMapping("/api/projects/{projectId}/kanbans")
         public ResponseEntity<ApiResponse<List<KanbanDTO>>> findAllByProject(
                         @PathVariable UUID projectId) {
 
@@ -31,7 +29,7 @@ public class KanbanController {
                                                 kanbanService.findAllByProjectId(projectId)));
         }
 
-        @GetMapping("/{id}")
+        @GetMapping("/api/kanbans/{kanbanId}")
         public ResponseEntity<ApiResponse<KanbanDTO>> findById(
                         @PathVariable UUID id) {
 

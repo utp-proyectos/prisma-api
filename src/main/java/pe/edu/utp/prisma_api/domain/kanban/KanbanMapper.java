@@ -19,6 +19,7 @@ import pe.edu.utp.prisma_api.domain.milestone.MilestoneMapper;
 public interface KanbanMapper {
 
         @Mapping(target = "creatorId", source = "creator.id")
+        @Mapping(target = "projectId", source = "project.id")
         KanbanDTO toDto(Kanban kanban);
 
         List<KanbanDTO> toDto(List<Kanban> kanbans);
@@ -28,6 +29,7 @@ public interface KanbanMapper {
         @Mapping(target = "columns", ignore = true)
         @Mapping(target = "milestones", ignore = true)
         @Mapping(target = "project", ignore = true)
+        @Mapping(target = "private", source = "privateSwitch")
         Kanban toEntity(CreateKanbanDTO dto);
 
         @Mapping(target = "id", ignore = true)

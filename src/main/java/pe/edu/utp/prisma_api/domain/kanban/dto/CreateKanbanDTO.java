@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class CreateKanbanDTO {
     private String name;
-    private boolean isPrivate;
+    private Boolean privateSwitch;
     private UUID projectId;
+    private UUID teamId;
 }

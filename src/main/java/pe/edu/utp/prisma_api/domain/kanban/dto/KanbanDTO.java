@@ -10,14 +10,9 @@ import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDTO;
 @Setter
 public class KanbanDTO {
     private UUID id;
-
     private UUID projectId;
-
     private String name;
-
     private boolean isPrivate;
-
     private UUID creatorId;
-
     private List<ColumnKanbanDTO> columns;
 }
