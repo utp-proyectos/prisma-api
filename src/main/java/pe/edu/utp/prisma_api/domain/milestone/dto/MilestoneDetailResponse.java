@@ -14,10 +14,6 @@ import lombok.Setter;
 public class MilestoneDetailResponse {
     private UUID id;
 
-    private UUID teamId;
-
-    private UUID projectId;
-
     private UUID kanbanId;
 
     private String title;

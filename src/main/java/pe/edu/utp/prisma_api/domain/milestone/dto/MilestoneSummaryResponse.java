@@ -12,10 +12,6 @@ import pe.edu.utp.prisma_api.domain.milestone.enums.StateMilestone;
 public class MilestoneSummaryResponse {
     private UUID id;
 
-    private UUID teamId;
-
-    private UUID projectId;
-
     private UUID kanbanId;
 
     private String title;

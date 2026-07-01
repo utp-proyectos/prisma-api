@@ -29,9 +29,11 @@ public class MilestoneWsController {
                 MilestoneSummaryResponse milestone = milestoneService.save(dto.getKanbanId(), dto);
 
                 String topic = "/topic/" +
-                                milestone.getTeamId() + "/" +
-                                milestone.getProjectId() + "/" +
-                                milestone.getKanbanId() + "/milestones";
+                                dto.getTeamId() + "/" +
+                                dto.getProjectId() + "/" +
+                                dto.getKanbanId() + "/milestones";
+
+                System.out.println("Publicando en Redis hacia el tópico: " + topic);
 
                 redisPublisher.publish(
                                 topic,
