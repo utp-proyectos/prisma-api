@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
-import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDTO;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
 import pe.edu.utp.prisma_api.domain.milestone.dto.MilestoneSummaryResponse;
 
 @Getter
@@ -19,7 +19,7 @@ public class KanbanDetailResponse {
     private UUID projectId;
     private UUID teamId;
 
-    private List<ColumnKanbanDTO> columns;
+    private List<ColumnKanbanDetailResponse> columns;
 
     private List<MilestoneSummaryResponse> milestones;
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
+import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanbanService;
 import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
@@ -25,6 +26,7 @@ public class KanbanService {
         private final ProjectRepository projectRepository;
         private final UserRepository userRepository;
         private final KanbanMapper kanbanMapper;
+        private final ColumnKanbanService columnKanbanService;
 
         public List<KanbanDTO> findAllByProjectId(UUID projectId) {
                 return kanbanMapper.toDto(
@@ -46,11 +48,15 @@ public class KanbanService {
                                 () -> new ResourceNotFoundException("Usuario no encontrado"));
 
                 Kanban kanban = kanbanMapper.toEntity(dto);
+
                 kanban.setCreator(creator);
                 kanban.setProject(project);
-                kanban.initializeDefaultBoard();
 
-                return kanbanMapper.toDto(kanbanRepository.save(kanban));
+                columnKanbanService.createDefaultColumns(kanban);
+
+                kanban = kanbanRepository.save(kanban);
+
+                return kanbanMapper.toDto(kanban);
         }
 
         public Optional<KanbanDTO> update(UUID id,
