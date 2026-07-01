@@ -9,6 +9,7 @@ import org.mapstruct.MappingTarget;
 import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanbanMapper;
 import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
 import pe.edu.utp.prisma_api.domain.kanban.dto.UpdateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.milestone.MilestoneMapper;
 
@@ -20,9 +21,16 @@ public interface KanbanMapper {
 
         @Mapping(target = "creatorId", source = "creator.id")
         @Mapping(target = "projectId", source = "project.id")
+        @Mapping(target = "teamId", source = "project.team.id")
         KanbanDTO toDto(Kanban kanban);
 
         List<KanbanDTO> toDto(List<Kanban> kanbans);
+
+        // Para los detalles del tablero
+        @Mapping(target = "creatorId", source = "creator.id")
+        @Mapping(target = "projectId", source = "project.id")
+        @Mapping(target = "teamId", source = "project.team.id")
+        KanbanDetailResponse toDetail(Kanban kanban);
 
         @Mapping(target = "id", ignore = true)
         @Mapping(target = "creator", ignore = true)

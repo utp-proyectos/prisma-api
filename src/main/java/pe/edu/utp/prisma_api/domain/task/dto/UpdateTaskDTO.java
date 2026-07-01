@@ -9,7 +9,7 @@ public class UpdateTaskDTO {
     private String title;
     private String description;
     private LocalDate startDate;
-    private LocalDate dueDate;
+    private LocalDate deadline;
     private boolean isGroupTask;
     private Priority priority;
     private String milestoneId;

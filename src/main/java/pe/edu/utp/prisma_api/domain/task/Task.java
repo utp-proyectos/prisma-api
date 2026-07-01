@@ -34,8 +34,8 @@ public class Task {
   @Column(nullable = false)
   private Integer position;
 
-  @Column(name = "due_date")
-  private LocalDate dueDate;
+  @Column(name = "deadline")
+  private LocalDate deadline;
 
   @Column(name = "is_group_task", nullable = false)
   private boolean isGroupTask;
@@ -43,6 +43,9 @@ public class Task {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Priority priority;
+
+  @Column(name = "is_completed", nullable = false)
+  private boolean isCompleted;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "column_id", nullable = false)

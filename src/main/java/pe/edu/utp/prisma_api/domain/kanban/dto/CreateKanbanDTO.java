@@ -11,5 +11,4 @@ public class CreateKanbanDTO {
     private String name;
     private Boolean privateSwitch;
     private UUID projectId;
-    private UUID teamId;
 }

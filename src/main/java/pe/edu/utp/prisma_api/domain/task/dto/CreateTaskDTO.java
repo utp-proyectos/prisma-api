@@ -9,7 +9,7 @@ import pe.edu.utp.prisma_api.common.enums.Priority;
 public class CreateTaskDTO {
     private String title;
     private String description;
-    private LocalDate dueDate;
+    private LocalDate deadline;
     private boolean isGroupTask;
     private Priority priority;
     private String milestoneId;

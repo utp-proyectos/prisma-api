@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
 import pe.edu.utp.prisma_api.common.response.ApiResponse;
+import pe.edu.utp.prisma_api.domain.kanban.KanbanService;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
-import pe.edu.utp.prisma_api.domain.kanban.services.KanbanService;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,10 +31,10 @@ public class KanbanController {
         }
 
         @GetMapping("/api/kanbans/{kanbanId}")
-        public ResponseEntity<ApiResponse<KanbanDTO>> findById(
-                        @PathVariable UUID id) {
+        public ResponseEntity<ApiResponse<KanbanDetailResponse>> findById(
+                        @PathVariable UUID kanbanId) {
 
-                KanbanDTO kanban = kanbanService.findById(id)
+                KanbanDetailResponse kanban = kanbanService.findById(kanbanId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
                 return ResponseEntity.ok(
