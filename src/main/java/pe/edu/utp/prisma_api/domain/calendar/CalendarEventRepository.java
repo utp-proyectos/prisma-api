@@ -12,18 +12,18 @@ import java.util.UUID;
 
 public interface CalendarEventRepository extends JpaRepository<CalendarEvent, UUID> {
 
-    List<CalendarEvent> findByProject_IdAndActiveTrueOrderByStartDateAsc(UUID projectId);
+        List<CalendarEvent> findByProject_IdAndActiveTrueOrderByStartDateAsc(UUID projectId);
 
-    Optional<CalendarEvent> findByIdAndProject_IdAndActiveTrue(UUID id, UUID projectId);
+        Optional<CalendarEvent> findByIdAndProject_IdAndActiveTrue(UUID id, UUID projectId);
 
-    @Query("SELECT e FROM CalendarEvent e " +
-            "WHERE e.project.id = :projectId " +
-            "AND e.active = true " +
-            "AND e.startDate <= :endDate " +
-            "AND e.endDate >= :startDate " +
-            "ORDER BY e.startDate ASC")
-    List<CalendarEvent> findByProjectAndDateRange(
-            @Param("projectId") UUID projectId,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
+        @Query("SELECT e FROM CalendarEvent e " +
+                "WHERE e.project.id = :projectId " +
+                "AND e.active = true " +
+                "AND e.startDate <= :endDate " +
+                "AND e.endDate >= :startDate " +
+                "ORDER BY e.startDate ASC")
+        List<CalendarEvent> findByProjectAndDateRange(
+                @Param("projectId") UUID projectId,
+                @Param("startDate") LocalDate startDate,
+                @Param("endDate") LocalDate endDate);
 }
