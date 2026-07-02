@@ -6,23 +6,22 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
 import pe.edu.utp.prisma_api.common.response.ApiResponse;
+import pe.edu.utp.prisma_api.domain.kanban.KanbanService;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
-import pe.edu.utp.prisma_api.domain.kanban.services.KanbanService;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
 
 @RestController
-@RequestMapping("/api/kanbans")
 @RequiredArgsConstructor
 public class KanbanController {
 
         private final KanbanService kanbanService;
 
-        @GetMapping("/project/{projectId}")
+        @GetMapping("/api/projects/{projectId}/kanbans")
         public ResponseEntity<ApiResponse<List<KanbanDTO>>> findAllByProject(
                         @PathVariable UUID projectId) {
 
@@ -31,11 +30,11 @@ public class KanbanController {
                                                 kanbanService.findAllByProjectId(projectId)));
         }
 
-        @GetMapping("/{id}")
-        public ResponseEntity<ApiResponse<KanbanDTO>> findById(
-                        @PathVariable UUID id) {
+        @GetMapping("/api/kanbans/{kanbanId}")
+        public ResponseEntity<ApiResponse<KanbanDetailResponse>> findById(
+                        @PathVariable UUID kanbanId) {
 
-                KanbanDTO kanban = kanbanService.findById(id)
+                KanbanDetailResponse kanban = kanbanService.findById(kanbanId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
                 return ResponseEntity.ok(

@@ -1,12 +1,14 @@
 package pe.edu.utp.prisma_api.domain.columnKanban.dto;
 
-import lombok.Data;
-import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
+import java.util.UUID;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
 public class CreateColumnKanbanDTO {
     private String title;
-    private ColumnType type;
-    private Integer position;
-    private boolean isFixed;
+    private UUID kanbanId;
+    private UUID projectId;
+    private UUID teamId;
 }

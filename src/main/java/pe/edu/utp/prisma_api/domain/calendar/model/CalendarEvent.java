@@ -22,7 +22,7 @@ import pe.edu.utp.prisma_api.domain.user.User;
 public class CalendarEvent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "calendar_event_id")
     private UUID id;
 

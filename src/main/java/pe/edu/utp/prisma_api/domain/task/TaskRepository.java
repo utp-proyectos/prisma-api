@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.domain.task;
 
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +23,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     // 3. Obtener próximas tareas (que no estén en columnas tipo COMPLETED) de un
     // proyecto
-    @Query("SELECT t FROM Project p JOIN p.kanbans k JOIN k.columns c JOIN c.tasks t WHERE p.id = :projectId AND c.type <> :type ORDER BY t.dueDate ASC")
+    @Query("SELECT t FROM Project p JOIN p.kanbans k JOIN k.columns c JOIN c.tasks t WHERE p.id = :projectId AND c.type <> :type ORDER BY t.deadline ASC")
     List<Task> findUpcomingTasks(@Param("projectId") UUID projectId, @Param("type") ColumnType type);
 
     // 4. Filtrar tareas de un Kanban específico asignadas a un usuario
@@ -32,4 +33,24 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     // 5. Obtener todas las tareas de un Kanban (Switch OFF)
     @Query("SELECT t FROM ColumnKanban c JOIN c.tasks t WHERE c.id = :kanbanId")
     List<Task> findAllByKanbanId(@Param("kanbanId") UUID kanbanId);
+
+    int countByColumnId(UUID columnId);
+
+    // 6* Buscar tareas del proyecto actual, tenga dueDate y no esten en la columna
+    // COMPLETED
+    @Query("""
+                SELECT t FROM Project p
+                JOIN p.kanbans k
+                JOIN k.columns c
+                JOIN c.tasks t
+                WHERE p.id = :projectId
+                AND t.deadline IS NOT NULL
+                AND t.deadline BETWEEN :startDate AND :endDate
+                AND t.isCompleted = false
+                ORDER BY t.deadline ASC
+            """)
+    List<Task> findDeadlinesByProjectAndDateRange(
+            @Param("projectId") UUID projectId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }
