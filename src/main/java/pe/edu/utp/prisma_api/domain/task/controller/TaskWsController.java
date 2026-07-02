@@ -1,4 +1,4 @@
-package pe.edu.utp.prisma_api.domain.columnKanban.controller;
+package pe.edu.utp.prisma_api.domain.task.controller;
 
 import java.util.List;
 
@@ -12,47 +12,67 @@ import pe.edu.utp.prisma_api.common.enums.WsAction;
 import pe.edu.utp.prisma_api.common.response.WsResponse;
 import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanbanService;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
-import pe.edu.utp.prisma_api.domain.columnKanban.dto.CreateColumnKanbanDTO;
-import pe.edu.utp.prisma_api.domain.columnKanban.dto.ReorderColumnsDTO;
+import pe.edu.utp.prisma_api.domain.task.TaskService;
+import pe.edu.utp.prisma_api.domain.task.dto.CreateTaskDTO;
+import pe.edu.utp.prisma_api.domain.task.dto.ReorderTasksDTO;
+import pe.edu.utp.prisma_api.domain.task.dto.TaskDetailResponse;
+import pe.edu.utp.prisma_api.domain.task.dto.UpdateTaskDTO;
 import pe.edu.utp.prisma_api.infraestructure.redis.RedisPublisher;
 
 @Controller
 @RequiredArgsConstructor
-public class ColumnKanbanWsController {
+public class TaskWsController {
+        private final TaskService taskService;
         private final ColumnKanbanService columnService;
         private final RedisPublisher redisPublisher;
 
-        @MessageMapping("/columnKanban.create")
+        @MessageMapping("/task.create")
         public void create(
-                        @Payload @Valid CreateColumnKanbanDTO dto) {
+                        @Payload @Valid CreateTaskDTO dto) {
 
-                ColumnKanbanDetailResponse column = columnService.save(dto.getKanbanId(), dto);
+                TaskDetailResponse task = taskService.save(dto);
 
                 String topic = "/topic/" +
                                 dto.getTeamId() + "/" +
                                 dto.getProjectId() + "/" +
-                                dto.getKanbanId() + "/columns";
+                                dto.getKanbanId() + "/tasks";
 
                 redisPublisher.publish(
                                 topic,
                                 new WsResponse<>(
                                                 WsAction.CREATE,
-                                                column));
+                                                task));
         }
 
-        @MessageMapping("/columnKanban.reorder")
-        public void reorderColumns(@Payload @Valid ReorderColumnsDTO dto) {
+        @MessageMapping("/task.update")
+        public void update(
+                        @Payload @Valid UpdateTaskDTO dto) {
 
-                System.out.println("Entró a reorderColumns");
+                TaskDetailResponse task = taskService.update(dto);
 
-                columnService.reorderColumns(dto);
+                String topic = "/topic/" +
+                                dto.getTeamId() + "/" +
+                                dto.getProjectId() + "/" +
+                                dto.getKanbanId() + "/tasks";
+
+                redisPublisher.publish(
+                                topic,
+                                new WsResponse<>(
+                                                WsAction.UPDATE,
+                                                task));
+        }
+
+        @MessageMapping("/task.reorder")
+        public void reorderTasks(@Payload @Valid ReorderTasksDTO dto) {
+
+                taskService.reorderTasks(dto);
 
                 List<ColumnKanbanDetailResponse> columns = columnService.findAllByKanban(dto.getKanbanId());
 
                 String topic = "/topic/" +
                                 dto.getTeamId() + "/" +
                                 dto.getProjectId() + "/" +
-                                dto.getKanbanId() + "/columns/reorder";
+                                dto.getKanbanId() + "/tasks/reorder";
 
                 redisPublisher.publish(
                                 topic,
@@ -60,5 +80,4 @@ public class ColumnKanbanWsController {
                                                 WsAction.REORDER,
                                                 columns));
         }
-
 }

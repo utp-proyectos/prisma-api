@@ -4,8 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import pe.edu.utp.prisma_api.domain.milestone.enums.StateMilestone;
-import pe.edu.utp.prisma_api.domain.task.dto.TaskDTO;
-
+import pe.edu.utp.prisma_api.domain.task.dto.TaskDetailResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,5 +27,5 @@ public class MilestoneDetailResponse {
 
     private StateMilestone state;
 
-    private TaskDTO[] tasks;
+    private TaskDetailResponse[] tasks;
 }

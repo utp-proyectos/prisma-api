@@ -25,10 +25,10 @@ public interface MilestoneMapper {
 
     List<MilestoneSummaryResponse> toDto(List<Milestone> entities);
 
-    @Mapping(target = "progress", expression = "java(calculateProgress(entity))")
-    @Mapping(target = "totalTasks", expression = "java(totalTasks(entity))")
-    @Mapping(target = "completedTasks", expression = "java(completedTasks(entity))")
-    @Mapping(target = "state", expression = "java(calculateState(entity))")
+    @Mapping(target = "progress", expression = "java(calculateProgress(milestone))")
+    @Mapping(target = "totalTasks", expression = "java(totalTasks(milestone))")
+    @Mapping(target = "completedTasks", expression = "java(completedTasks(milestone))")
+    @Mapping(target = "state", expression = "java(calculateState(milestone))")
     @Mapping(target = "kanbanId", source = "kanban.id")
     MilestoneDetailResponse toDetail(Milestone milestone);
 

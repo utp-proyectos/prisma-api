@@ -21,7 +21,6 @@ public class RedisSubscriber implements MessageListener {
     try {
       String channel = new String(message.getChannel(), StandardCharsets.UTF_8);
       String body = new String(message.getBody(), StandardCharsets.UTF_8);
-
       messagingTemplate.convertAndSend(channel, jsonMapper.readTree(body));
 
     } catch (Exception e) {
