@@ -13,6 +13,8 @@ import pe.edu.utp.prisma_api.domain.task.dto.TaskAssignmentDTO;
 public interface TaskAssignmentMapper {
 
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "name", source = "user.name")
+    @Mapping(target = "lastName", source = "user.lastName")
     TaskAssignmentDTO toDto(TaskAssignment entity);
 
     List<TaskAssignmentDTO> toDto(List<TaskAssignment> entities);

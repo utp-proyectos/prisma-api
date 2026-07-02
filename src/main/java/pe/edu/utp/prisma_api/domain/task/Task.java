@@ -41,7 +41,6 @@ public class Task {
   private boolean isGroupTask;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
   private Priority priority;
 
   @Column(name = "is_completed", nullable = false)
@@ -55,9 +54,9 @@ public class Task {
   @JoinColumn(name = "milestone_id")
   private Milestone milestone;
 
-  @OneToMany(mappedBy = "task")
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<TaskAssignment> assignments = new ArrayList<>();
 
-  @OneToMany(mappedBy = "task")
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Checklist> checklists = new ArrayList<>();
 }

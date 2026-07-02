@@ -32,4 +32,6 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     // 5. Obtener todas las tareas de un Kanban (Switch OFF)
     @Query("SELECT t FROM ColumnKanban c JOIN c.tasks t WHERE c.id = :kanbanId")
     List<Task> findAllByKanbanId(@Param("kanbanId") UUID kanbanId);
+
+    int countByColumnId(UUID columnId);
 }

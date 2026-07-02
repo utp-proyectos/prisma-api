@@ -6,7 +6,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
-import pe.edu.utp.prisma_api.domain.task.dto.TaskDTO;
+import pe.edu.utp.prisma_api.domain.task.dto.TaskDetailResponse;
 
 @Getter
 @Setter
@@ -16,5 +16,5 @@ public class ColumnKanbanDetailResponse {
     private Integer position;
     private boolean fixed;
     private ColumnType type;
-    private List<TaskDTO> tasks;
+    private List<TaskDetailResponse> tasks;
 }

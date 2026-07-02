@@ -2,21 +2,37 @@ package pe.edu.utp.prisma_api.domain.task.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
-import lombok.Data;
+import lombok.*;
 import pe.edu.utp.prisma_api.common.enums.Priority;
 import pe.edu.utp.prisma_api.domain.checklist.dto.ChecklistDTO;
 
-@Data
-public class TaskDTO {
-    private String id;
+@Getter
+@Setter
+public class TaskDetailResponse {
+
+    private UUID id;
+
     private String title;
+
     private String description;
+
     private Integer position;
+
     private LocalDate deadline;
-    private boolean isGroupTask;
+
     private Priority priority;
-    private String milestoneId;
+
+    private boolean completed;
+
+    private boolean groupTask;
+
+    private UUID columnId;
+
+    private UUID milestoneId;
+
     private List<TaskAssignmentDTO> assignments;
+
     private List<ChecklistDTO> checklists;
 }

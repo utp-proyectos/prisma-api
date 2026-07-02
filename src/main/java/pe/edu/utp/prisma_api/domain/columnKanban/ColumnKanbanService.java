@@ -2,10 +2,8 @@ package pe.edu.utp.prisma_api.domain.columnKanban;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.CreateColumnKanbanDTO;
-import pe.edu.utp.prisma_api.domain.columnKanban.dto.UpdateColumnKanbanDTO;
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 import pe.edu.utp.prisma_api.domain.kanban.KanbanRepository;
