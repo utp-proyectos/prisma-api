@@ -111,8 +111,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         List<Task> deadlines = taskRepository.findDeadlinesByProjectAndDateRange(
                 projectId,
                 startDate,
-                endDate,
-                ColumnType.COMPLETED
+                endDate
         );
 
         for (Task task : deadlines) {
@@ -145,8 +144,8 @@ public class CalendarEventServiceImpl implements CalendarEventService {
 
         item.setId("deadline-" + task.getId());
         item.setTitle(task.getTitle());
-        item.setStart(task.getDueDate().toString());
-        item.setEnd(task.getDueDate().plusDays(1).toString());
+        item.setStart(task.getDeadline().toString());
+        item.setEnd(task.getDeadline().plusDays(1).toString());
         item.setAllDay(true);
         item.setType(CalendarItemType.DEADLINE);
         item.setSourceId(String.valueOf(task.getId()));

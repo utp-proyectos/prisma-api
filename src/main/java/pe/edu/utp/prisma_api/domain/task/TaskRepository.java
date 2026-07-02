@@ -41,15 +41,14 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
         JOIN k.columns c
         JOIN c.tasks t
         WHERE p.id = :projectId
-        AND t.dueDate IS NOT NULL
-        AND t.dueDate BETWEEN :startDate AND :endDate
-        AND c.type <> :completedType
-        ORDER BY t.dueDate ASC
+        AND t.deadline IS NOT NULL
+        AND t.deadline BETWEEN :startDate AND :endDate
+        AND t.isCompleted = false
+        ORDER BY t.deadline ASC
     """)
     List<Task> findDeadlinesByProjectAndDateRange(
             @Param("projectId") UUID projectId,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            @Param("completedType") ColumnType completedType
+            @Param("endDate") LocalDate endDate
     );
 }
