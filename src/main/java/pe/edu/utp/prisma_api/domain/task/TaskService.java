@@ -13,7 +13,9 @@ import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanbanRepository;
 import pe.edu.utp.prisma_api.domain.milestone.Milestone;
 import pe.edu.utp.prisma_api.domain.milestone.MilestoneRepository;
 import pe.edu.utp.prisma_api.domain.task.dto.CreateTaskDTO;
+import pe.edu.utp.prisma_api.domain.task.dto.ReorderTasksDTO;
 import pe.edu.utp.prisma_api.domain.task.dto.TaskDetailResponse;
+import pe.edu.utp.prisma_api.domain.task.dto.TaskOrderDTO;
 import pe.edu.utp.prisma_api.domain.task.dto.UpdateTaskDTO;
 import pe.edu.utp.prisma_api.domain.user.User;
 import pe.edu.utp.prisma_api.domain.user.UserRepository;
@@ -134,5 +136,28 @@ public class TaskService {
         Task updated = taskRepository.save(task);
 
         return mapper.toDetail(updated);
+    }
+
+    @Transactional
+    public void reorderTasks(ReorderTasksDTO dto) {
+        Task movedTask = taskRepository.findById(dto.getTaskId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada"));
+
+        if (!movedTask.getColumn().getId().equals(dto.getTargetColumnId())) {
+            ColumnKanban targetColumn = columnRepository.findById(dto.getTargetColumnId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
+            movedTask.setColumn(targetColumn);
+
+            if (targetColumn.isFixed()) {
+                movedTask.setCompleted(true);
+            } else {
+                movedTask.setCompleted(false);
+            }
+            taskRepository.save(movedTask);
+        }
+
+        for (TaskOrderDTO taskDto : dto.getTargetTasks()) {
+            taskRepository.updatePosition(taskDto.getId(), taskDto.getPosition());
+        }
     }
 }

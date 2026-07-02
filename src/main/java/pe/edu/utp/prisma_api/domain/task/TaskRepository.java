@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -34,8 +35,6 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("SELECT t FROM ColumnKanban c JOIN c.tasks t WHERE c.id = :kanbanId")
     List<Task> findAllByKanbanId(@Param("kanbanId") UUID kanbanId);
 
-    int countByColumnId(UUID columnId);
-
     // 6* Buscar tareas del proyecto actual, tenga dueDate y no esten en la columna
     // COMPLETED
     @Query("""
@@ -53,4 +52,10 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
             @Param("projectId") UUID projectId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    int countByColumnId(UUID columnId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Task t SET t.position = :position WHERE t.id = :id")
+    void updatePosition(@Param("id") UUID id, @Param("position") Integer position);
 }

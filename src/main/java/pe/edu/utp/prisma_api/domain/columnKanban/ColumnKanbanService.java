@@ -7,10 +7,13 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnOrderDTO;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.CreateColumnKanbanDTO;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.ReorderColumnsDTO;
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 import pe.edu.utp.prisma_api.domain.kanban.KanbanRepository;
@@ -88,48 +91,10 @@ public class ColumnKanbanService {
         return mapper.toDetail(column);
     }
 
-    // public Optional<ColumnKanbanDTO> update(UUID id, UpdateColumnKanbanDTO dto) {
-
-    // return columnRepository.findById(id)
-    // .map(column -> {
-    // mapper.update(dto, column);
-
-    // return mapper.toDto(columnRepository.save(column));
-    // });
-    // }
-
-    // public void delete(UUID id) {
-
-    // ColumnKanban column = columnRepository.findById(id)
-    // .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrado"));
-
-    // Kanban kanban = column.getKanban();
-    // kanban.getColumns().remove(column);
-
-    // kanbanRepository.save(kanban);
-    // }
-
-    // public void reorder(UUID kanbanId, List<UUID> columnIds) {
-
-    // Kanban kanban = kanbanRepository.findById(kanbanId)
-    // .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
-
-    // Map<UUID, ColumnKanban> map = kanban.getColumns()
-    // .stream()
-    // .collect(Collectors.toMap(
-    // column -> column.getId(),
-    // column -> column,
-    // (existing, replacement) -> existing));
-
-    // for (int i = 0; i < columnIds.size(); i++) {
-
-    // ColumnKanban column = map.get(columnIds.get(i));
-
-    // if (column != null) {
-    // column.setPosition(i);
-    // }
-    // }
-
-    // columnRepository.saveAll(kanban.getColumns());
-    // }
+    @Transactional
+    public void reorderColumns(ReorderColumnsDTO dto) {
+        for (ColumnOrderDTO colDto : dto.getColumns()) {
+            columnRepository.updatePosition(colDto.getId(), colDto.getPosition());
+        }
+    }
 }
