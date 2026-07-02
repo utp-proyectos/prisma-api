@@ -1,5 +1,7 @@
 package pe.edu.utp.prisma_api.domain.task.controller;
 
+import java.util.List;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.enums.WsAction;
 import pe.edu.utp.prisma_api.common.response.WsResponse;
+import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanbanService;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
 import pe.edu.utp.prisma_api.domain.task.TaskService;
 import pe.edu.utp.prisma_api.domain.task.dto.CreateTaskDTO;
 import pe.edu.utp.prisma_api.domain.task.dto.ReorderTasksDTO;
@@ -19,6 +23,7 @@ import pe.edu.utp.prisma_api.infraestructure.redis.RedisPublisher;
 @RequiredArgsConstructor
 public class TaskWsController {
         private final TaskService taskService;
+        private final ColumnKanbanService columnService;
         private final RedisPublisher redisPublisher;
 
         @MessageMapping("/task.create")
@@ -62,15 +67,17 @@ public class TaskWsController {
 
                 taskService.reorderTasks(dto);
 
+                List<ColumnKanbanDetailResponse> columns = columnService.findAllByKanban(dto.getKanbanId());
+
                 String topic = "/topic/" +
                                 dto.getTeamId() + "/" +
                                 dto.getProjectId() + "/" +
-                                dto.getKanbanId() + "/tasks";
+                                dto.getKanbanId() + "/tasks/reorder";
 
                 redisPublisher.publish(
                                 topic,
                                 new WsResponse<>(
                                                 WsAction.REORDER,
-                                                dto));
+                                                columns));
         }
 }

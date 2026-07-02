@@ -1,5 +1,7 @@
 package pe.edu.utp.prisma_api.domain.columnKanban.controller;
 
+import java.util.List;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
@@ -41,18 +43,22 @@ public class ColumnKanbanWsController {
         @MessageMapping("/columnKanban.reorder")
         public void reorderColumns(@Payload @Valid ReorderColumnsDTO dto) {
 
+                System.out.println("Entró a reorderColumns");
+
                 columnService.reorderColumns(dto);
+
+                List<ColumnKanbanDetailResponse> columns = columnService.findAllByKanban(dto.getKanbanId());
 
                 String topic = "/topic/" +
                                 dto.getTeamId() + "/" +
                                 dto.getProjectId() + "/" +
-                                dto.getKanbanId() + "/columns";
+                                dto.getKanbanId() + "/columns/reorder";
 
                 redisPublisher.publish(
                                 topic,
                                 new WsResponse<>(
                                                 WsAction.REORDER,
-                                                dto.getColumns()));
+                                                columns));
         }
 
 }

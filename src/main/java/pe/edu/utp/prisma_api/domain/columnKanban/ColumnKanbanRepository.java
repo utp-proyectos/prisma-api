@@ -1,5 +1,6 @@
 package pe.edu.utp.prisma_api.domain.columnKanban;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,17 @@ public interface ColumnKanbanRepository extends JpaRepository<ColumnKanban, UUID
             WHERE c.kanban.id = :kanbanId
             """)
     Integer findLastPosition(UUID kanbanId);
+
+    @Query("""
+            select distinct c
+            from ColumnKanban c
+            left join fetch c.tasks
+            where c.kanban.id = :kanbanId
+            order by c.position
+            """)
+    List<ColumnKanban> findAllByKanbanWithTasks(UUID kanbanId);
+
+    List<ColumnKanban> findByKanbanIdOrderByPosition(UUID kanbanId);
 
     @Modifying(clearAutomatically = true) // <-- CRUCIAL
     @Query("UPDATE ColumnKanban c SET c.position = :position WHERE c.id = :id")

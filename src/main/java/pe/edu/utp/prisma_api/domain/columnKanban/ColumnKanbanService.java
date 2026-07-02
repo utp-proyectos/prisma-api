@@ -6,8 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.exception.ResourceNotFoundException;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
@@ -55,14 +54,11 @@ public class ColumnKanbanService {
                 completed));
     }
 
+    @Transactional(readOnly = true)
     public List<ColumnKanbanDetailResponse> findAllByKanban(UUID kanbanId) {
 
-        Kanban kanban = kanbanRepository.findById(kanbanId)
-                .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
-
-        return kanban.getColumns()
+        return columnRepository.findAllByKanbanWithTasks(kanbanId)
                 .stream()
-                .sorted(Comparator.comparing(column -> column.getPosition()))
                 .map(mapper::toDetail)
                 .toList();
     }
