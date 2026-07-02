@@ -15,15 +15,21 @@ public interface CalendarEventService {
 
         Optional<CalendarEvent> updateEvent(UUID projectId, UUID eventId, CalendarEventRequest request);
 
+        void deleteEvent(UUID projectId, UUID eventId);
+
         List<CalendarEvent> findEventsByProject(UUID projectId);
 
         List<CalendarEvent> findEventsByProjectAndDateRange(
-                        UUID projectId,
-                        LocalDate startDate,
-                        LocalDate endDate);
+        UUID projectId,
+        LocalDate startDate,
+        LocalDate endDate
+        );
 
         List<CalendarItemDTO> getCalendarItems(
-                        UUID projectId,
-                        LocalDate startDate,
-                        LocalDate endDate);
+                UUID projectId,
+                LocalDate startDate,
+                LocalDate endDate
+        );
+
+        CalendarItemDTO convertEventToCalendarItem(CalendarEvent event);
 }
