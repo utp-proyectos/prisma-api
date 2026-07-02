@@ -2,12 +2,12 @@ package pe.edu.utp.prisma_api.domain.kanban.dto;
 
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 public class UpdateKanbanDTO {
+    private UUID kanbanId;
     private String name;
     private boolean isPrivate;
-    private UUID kanbanId;
-    private UUID projectId;
 }

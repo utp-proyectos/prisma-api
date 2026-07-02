@@ -1,11 +1,17 @@
 package pe.edu.utp.prisma_api.domain.milestone.dto;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CreateMilestoneDTO {
     private String title;
-    private LocalDate dueDate;
+    private LocalDate deadline;
+    private UUID kanbanId;
+    private UUID projectId;
+    private UUID teamId;
 }

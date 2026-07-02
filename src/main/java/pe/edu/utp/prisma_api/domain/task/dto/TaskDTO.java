@@ -13,7 +13,7 @@ public class TaskDTO {
     private String title;
     private String description;
     private Integer position;
-    private LocalDate dueDate;
+    private LocalDate deadline;
     private boolean isGroupTask;
     private Priority priority;
     private String milestoneId;

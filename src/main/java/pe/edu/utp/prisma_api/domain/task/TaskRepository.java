@@ -23,7 +23,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     // 3. Obtener próximas tareas (que no estén en columnas tipo COMPLETED) de un
     // proyecto
-    @Query("SELECT t FROM Project p JOIN p.kanbans k JOIN k.columns c JOIN c.tasks t WHERE p.id = :projectId AND c.type <> :type ORDER BY t.dueDate ASC")
+    @Query("SELECT t FROM Project p JOIN p.kanbans k JOIN k.columns c JOIN c.tasks t WHERE p.id = :projectId AND c.type <> :type ORDER BY t.deadline ASC")
     List<Task> findUpcomingTasks(@Param("projectId") UUID projectId, @Param("type") ColumnType type);
 
     // 4. Filtrar tareas de un Kanban específico asignadas a un usuario
