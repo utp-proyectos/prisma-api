@@ -1,6 +1,10 @@
 package pe.edu.utp.prisma_api.domain.message;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +27,7 @@ import pe.edu.utp.prisma_api.domain.user.User;
 public class Message {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  private UUID id;
 
   private String content;
 
@@ -35,6 +39,9 @@ public class Message {
   @JoinColumn(name = "channel_id")
   private Channel channel;
 
+  @CreationTimestamp
   private LocalDateTime createdAt;
+
+  @UpdateTimestamp
   private LocalDateTime editedAt;
 }

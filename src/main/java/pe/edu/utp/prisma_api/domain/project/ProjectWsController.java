@@ -1,8 +1,5 @@
 package pe.edu.utp.prisma_api.domain.project;
 
-import java.security.Principal;
-import java.util.UUID;
-
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
@@ -21,10 +18,8 @@ public class ProjectWsController {
 
   @MessageMapping("/project.create")
   public void createProject(
-      @Valid @Payload CreateProjectRequest request,
-      Principal principal) {
-    ProjectResponse project = projectService.createProject(
-        request.getTeamId(), request, UUID.fromString(principal.getName()));
+      @Valid @Payload CreateProjectRequest request) {
+    ProjectResponse project = projectService.createProject(request);
 
     redisPublisher.publish("/topic/" + request.getTeamId() + "/projects", project);
 

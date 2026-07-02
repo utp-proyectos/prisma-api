@@ -1,6 +1,9 @@
 package pe.edu.utp.prisma_api.domain.channel;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,7 +26,7 @@ import pe.edu.utp.prisma_api.domain.project.Project;
 public class Channel {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  private UUID id;
 
   private String name;
 
@@ -31,5 +34,6 @@ public class Channel {
   @JoinColumn(name = "project_id", nullable = false)
   private Project project;
 
+  @CreationTimestamp
   private LocalDateTime createdAt;
 }

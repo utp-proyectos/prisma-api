@@ -13,4 +13,5 @@ import pe.edu.utp.prisma_api.common.enums.WsAction;
 public class WsResponse<T> {
     WsAction action;
     T payload;
+
 }
