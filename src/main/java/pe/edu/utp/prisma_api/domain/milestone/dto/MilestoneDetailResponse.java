@@ -13,8 +13,6 @@ import lombok.Setter;
 public class MilestoneDetailResponse {
     private UUID id;
 
-    private UUID kanbanId;
-
     private String title;
 
     private LocalDate deadline;
@@ -28,4 +26,8 @@ public class MilestoneDetailResponse {
     private StateMilestone state;
 
     private TaskDetailResponse[] tasks;
+
+    private UUID kanbanId;
+    private UUID projectId;
+    private UUID teamId;
 }
