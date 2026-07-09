@@ -1,5 +1,6 @@
 package pe.edu.utp.prisma_api.domain.project;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +21,13 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final ProjectMapper projectMapper;
+
+    public List<ProjectResponse> findAllByTeamId(UUID teamId, UUID userId) {
+        List<Project> proyectos = projectRepository.findByTeamId(teamId);
+
+        return projectMapper.toDtoList(proyectos);
+    }
 
     public ProjectResponse createProject(UUID teamId, CreateProjectRequest request, UUID userId) {
 

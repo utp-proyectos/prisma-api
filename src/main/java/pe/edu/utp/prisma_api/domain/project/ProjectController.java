@@ -1,10 +1,12 @@
 package pe.edu.utp.prisma_api.domain.project;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,16 @@ import pe.edu.utp.prisma_api.domain.project.dto.ProjectResponse;
 @RequiredArgsConstructor
 public class ProjectController {
   private final ProjectService projectService;
+
+  @GetMapping
+  public ResponseEntity<ApiResponse<List<ProjectResponse>>> findAllByTeam(
+      @PathVariable UUID teamId,
+      @AuthenticationPrincipal UUID userId) {
+
+    List<ProjectResponse> proyectos = projectService.findAllByTeamId(teamId, userId);
+
+    return ResponseEntity.ok(ApiResponse.ok("Proyectos del equipo obtenidos con éxito", proyectos));
+  }
 
   @PostMapping
   public ResponseEntity<ApiResponse<ProjectResponse>> createProject(

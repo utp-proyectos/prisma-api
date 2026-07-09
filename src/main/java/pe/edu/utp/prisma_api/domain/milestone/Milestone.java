@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,7 +44,7 @@ public class Milestone {
     @JoinColumn(name = "kanban_id", nullable = false)
     private Kanban kanban;
 
-    @OneToMany(mappedBy = "milestone")
+    @OneToMany(mappedBy = "milestone", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
 }
