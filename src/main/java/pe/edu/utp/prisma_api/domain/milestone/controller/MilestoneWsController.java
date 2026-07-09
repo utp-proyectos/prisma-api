@@ -41,4 +41,5 @@ public class MilestoneWsController {
                                                 WsAction.CREATE,
                                                 milestone));
         }
+
 }

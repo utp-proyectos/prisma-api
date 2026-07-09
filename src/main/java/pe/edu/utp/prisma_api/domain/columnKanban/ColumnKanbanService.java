@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.domain.columnKanban;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

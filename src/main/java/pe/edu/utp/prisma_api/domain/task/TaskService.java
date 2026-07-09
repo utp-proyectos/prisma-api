@@ -140,20 +140,17 @@ public class TaskService {
 
     @Transactional
     public void reorderTasks(ReorderTasksDTO dto) {
+        // Buscamos la tarea que el usuario movio
         Task movedTask = taskRepository.findById(dto.getTaskId())
                 .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada"));
 
+        // Lógica si la tarea cambió de columna
         if (!movedTask.getColumn().getId().equals(dto.getTargetColumnId())) {
             ColumnKanban targetColumn = columnRepository.findById(dto.getTargetColumnId())
                     .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
             movedTask.setColumn(targetColumn);
 
-            if (targetColumn.isFixed()) {
-                movedTask.setCompleted(true);
-            } else {
-                movedTask.setCompleted(false);
-            }
-            taskRepository.save(movedTask);
+            movedTask.setCompleted(targetColumn.isFixed());
         }
 
         for (TaskOrderDTO taskDto : dto.getTargetTasks()) {

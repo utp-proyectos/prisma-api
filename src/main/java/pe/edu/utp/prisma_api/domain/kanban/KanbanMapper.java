@@ -22,6 +22,7 @@ public interface KanbanMapper {
         @Mapping(target = "creatorId", source = "creator.id")
         @Mapping(target = "projectId", source = "project.id")
         @Mapping(target = "teamId", source = "project.team.id")
+        @Mapping(target = "privateSwitch", source = "private")
         KanbanDTO toDto(Kanban kanban);
 
         List<KanbanDTO> toDto(List<Kanban> kanbans);
@@ -30,6 +31,7 @@ public interface KanbanMapper {
         @Mapping(target = "creatorId", source = "creator.id")
         @Mapping(target = "projectId", source = "project.id")
         @Mapping(target = "teamId", source = "project.team.id")
+        @Mapping(target = "privateSwitch", source = "private")
         KanbanDetailResponse toDetail(Kanban kanban);
 
         @Mapping(target = "id", ignore = true)
@@ -45,6 +47,7 @@ public interface KanbanMapper {
         @Mapping(target = "columns", ignore = true)
         @Mapping(target = "milestones", ignore = true)
         @Mapping(target = "project", ignore = true)
+        @Mapping(target = "private", source = "privateSwitch")
         void update(UpdateKanbanDTO dto,
                         @MappingTarget Kanban entity);
 }

@@ -13,7 +13,7 @@ import pe.edu.utp.prisma_api.domain.milestone.dto.MilestoneSummaryResponse;
 public class KanbanDetailResponse {
     private UUID id;
     private String name;
-    private boolean isPrivate;
+    private boolean privateSwitch;
 
     private UUID creatorId;
     private UUID projectId;
