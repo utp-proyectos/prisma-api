@@ -15,6 +15,7 @@ import pe.edu.utp.prisma_api.domain.milestone.dto.CreateMilestoneDTO;
 import pe.edu.utp.prisma_api.domain.milestone.dto.MilestoneDetailResponse;
 import pe.edu.utp.prisma_api.domain.milestone.dto.MilestoneSummaryResponse;
 import pe.edu.utp.prisma_api.domain.milestone.dto.UpdateMilestoneDTO;
+import pe.edu.utp.prisma_api.domain.task.TaskRepository;
 
 @Service
 @Transactional
@@ -24,6 +25,7 @@ public class MilestoneService {
     private final MilestoneRepository milestoneRepository;
     private final MilestoneMapper milestoneMapper;
     private final KanbanRepository kanbanRepository;
+    private final TaskRepository taskRepository;
 
     public List<MilestoneSummaryResponse> findAllByKanbanId(UUID kanbanId) {
         return milestoneMapper.toDto(milestoneRepository.findAllByKanbanId(kanbanId));
@@ -57,6 +59,11 @@ public class MilestoneService {
     }
 
     public void delete(UUID id) {
-        milestoneRepository.deleteById(id);
+        Milestone milestone = milestoneRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hito no encontrado"));
+
+        taskRepository.disassociateTasksFromMilestone(id);
+
+        milestoneRepository.delete(milestone);
     }
 }

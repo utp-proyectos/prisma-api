@@ -58,4 +58,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Task t SET t.position = :position WHERE t.id = :id")
     void updatePosition(@Param("id") UUID id, @Param("position") Integer position);
+
+    @Modifying
+    @Query("UPDATE Task t SET t.milestone = null, t.deadline = null WHERE t.milestone.id = :milestoneId")
+    void disassociateTasksFromMilestone(@Param("milestoneId") UUID milestoneId);
 }

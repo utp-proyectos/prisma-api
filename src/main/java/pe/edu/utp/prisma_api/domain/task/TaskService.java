@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.task;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import pe.edu.utp.prisma_api.domain.user.User;
 import pe.edu.utp.prisma_api.domain.user.UserRepository;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -28,6 +30,14 @@ public class TaskService {
     private final MilestoneRepository milestoneRepository;
     private final UserRepository userRepository;
     private final TaskMapper mapper;
+
+    public List<TaskDetailResponse> findAllByKanbanId(UUID kanbanId) {
+        return mapper.toDto(taskRepository.findAllByKanbanId(kanbanId));
+    }
+
+    public Optional<TaskDetailResponse> findById(UUID id) {
+        return taskRepository.findById(id).map(mapper::toDetail);
+    }
 
     public TaskDetailResponse save(CreateTaskDTO dto) {
 
@@ -61,7 +71,6 @@ public class TaskService {
         return mapper.toDetail(saved);
     }
 
-    @Transactional
     public TaskDetailResponse update(UpdateTaskDTO dto) {
 
         Task task = taskRepository.findById(dto.getId())
@@ -138,7 +147,10 @@ public class TaskService {
         return mapper.toDetail(updated);
     }
 
-    @Transactional
+    public void delete(UUID id) {
+        taskRepository.deleteById(id);
+    }
+
     public void reorderTasks(ReorderTasksDTO dto) {
         // Buscamos la tarea que el usuario movio
         Task movedTask = taskRepository.findById(dto.getTaskId())
