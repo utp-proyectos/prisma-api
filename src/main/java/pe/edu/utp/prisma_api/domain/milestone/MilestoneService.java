@@ -35,6 +35,10 @@ public class MilestoneService {
         return milestoneRepository.findById(id).map(milestoneMapper::toDetail);
     }
 
+    public Optional<MilestoneSummaryResponse> findSummaryById(UUID id) {
+        return milestoneRepository.findById(id).map(milestoneMapper::toDto);
+    }
+
     public MilestoneSummaryResponse save(UUID kanbanId, CreateMilestoneDTO dto) {
 
         Kanban kanban = kanbanRepository.findById(kanbanId)
@@ -65,5 +69,17 @@ public class MilestoneService {
         taskRepository.disassociateTasksFromMilestone(id);
 
         milestoneRepository.delete(milestone);
+    }
+
+    public List<MilestoneSummaryResponse> refresh(UUID kanbanId) {
+        return milestoneMapper.toDto(
+                milestoneRepository.findAllByKanbanId(kanbanId));
+    }
+
+    public List<MilestoneDetailResponse> refreshDetails(UUID kanbanId) {
+        return milestoneRepository.findAllByKanbanId(kanbanId)
+                .stream()
+                .map(milestoneMapper::toDetail)
+                .toList();
     }
 }
