@@ -14,6 +14,9 @@ import pe.edu.utp.prisma_api.domain.task.TaskMapper;
 @Mapper(componentModel = "spring", uses = TaskMapper.class)
 public interface ColumnKanbanMapper {
 
+    @Mapping(target = "kanbanId", source = "kanban.id")
+    @Mapping(target = "projectId", source = "kanban.project.id")
+    @Mapping(target = "teamId", source = "kanban.project.team.id")
     ColumnKanbanDetailResponse toDetail(ColumnKanban entity);
 
     List<ColumnKanbanDetailResponse> toDetail(List<ColumnKanban> entities);
@@ -31,6 +34,7 @@ public interface ColumnKanbanMapper {
     @Mapping(target = "tasks", ignore = true)
     @Mapping(target = "fixed", ignore = true)
     @Mapping(target = "type", ignore = true)
+    @Mapping(target = "position", ignore = true)
     void update(UpdateColumnKanbanDTO dto,
             @MappingTarget ColumnKanban entity);
 }
