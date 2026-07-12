@@ -53,7 +53,7 @@ public class MilestoneService {
     }
 
     public Optional<MilestoneSummaryResponse> update(UUID id, UpdateMilestoneDTO dto) {
-        return milestoneRepository.findWithKanbanAndProjectAndTeamById(id)
+        return milestoneRepository.findWithAllDetailsById(id)
                 .map(existing -> {
 
                     milestoneMapper.update(dto, existing);

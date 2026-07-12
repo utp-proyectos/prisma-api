@@ -15,5 +15,5 @@ public interface MilestoneRepository extends JpaRepository<Milestone, UUID> {
             "kanban.project",
             "kanban.project.team"
     })
-    Optional<Milestone> findWithKanbanAndProjectAndTeamById(UUID id);
+    Optional<Milestone> findWithAllDetailsById(UUID id);
 }
