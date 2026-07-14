@@ -1,6 +1,5 @@
 package pe.edu.utp.prisma_api.domain.columnKanban;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,11 +12,13 @@ import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnKanbanDetailResponse;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ColumnOrderDTO;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.CreateColumnKanbanDTO;
 import pe.edu.utp.prisma_api.domain.columnKanban.dto.ReorderColumnsDTO;
+import pe.edu.utp.prisma_api.domain.columnKanban.dto.UpdateColumnKanbanDTO;
 import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
 import pe.edu.utp.prisma_api.domain.kanban.Kanban;
 import pe.edu.utp.prisma_api.domain.kanban.KanbanRepository;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ColumnKanbanService {
 
@@ -87,7 +88,27 @@ public class ColumnKanbanService {
         return mapper.toDetail(column);
     }
 
-    @Transactional
+    public Optional<ColumnKanbanDetailResponse> update(UUID id, UpdateColumnKanbanDTO dto) {
+        return columnRepository.findWithKanbanAndProjectAndTeamById(id)
+                .map(existing -> {
+
+                    mapper.update(dto, existing);
+                    ColumnKanban guardado = columnRepository.save(existing);
+                    return mapper.toDetail(guardado);
+                });
+    }
+
+    public void delete(UUID id) {
+        ColumnKanban column = columnRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
+
+        if (column.isFixed()) {
+            throw new IllegalArgumentException("No se pueden eliminar columnas fijas");
+        }
+
+        columnRepository.delete(column);
+    }
+
     public void reorderColumns(ReorderColumnsDTO dto) {
         for (ColumnOrderDTO colDto : dto.getColumns()) {
             columnRepository.updatePosition(colDto.getId(), colDto.getPosition());

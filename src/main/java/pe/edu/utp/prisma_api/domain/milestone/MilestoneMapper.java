@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 import pe.edu.utp.prisma_api.domain.milestone.dto.CreateMilestoneDTO;
 import pe.edu.utp.prisma_api.domain.milestone.dto.MilestoneDetailResponse;
 import pe.edu.utp.prisma_api.domain.milestone.dto.MilestoneSummaryResponse;
+import pe.edu.utp.prisma_api.domain.milestone.dto.UpdateMilestoneDTO;
 import pe.edu.utp.prisma_api.domain.milestone.enums.StateMilestone;
 import pe.edu.utp.prisma_api.domain.task.TaskMapper;
 
@@ -21,6 +22,8 @@ public interface MilestoneMapper {
     @Mapping(target = "completedTasks", expression = "java(completedTasks(entity))")
     @Mapping(target = "state", expression = "java(calculateState(entity))")
     @Mapping(target = "kanbanId", source = "kanban.id")
+    @Mapping(target = "projectId", source = "kanban.project.id")
+    @Mapping(target = "teamId", source = "kanban.project.team.id")
     MilestoneSummaryResponse toDto(Milestone entity);
 
     List<MilestoneSummaryResponse> toDto(List<Milestone> entities);
@@ -30,6 +33,8 @@ public interface MilestoneMapper {
     @Mapping(target = "completedTasks", expression = "java(completedTasks(milestone))")
     @Mapping(target = "state", expression = "java(calculateState(milestone))")
     @Mapping(target = "kanbanId", source = "kanban.id")
+    @Mapping(target = "projectId", source = "kanban.project.id")
+    @Mapping(target = "teamId", source = "kanban.project.team.id")
     MilestoneDetailResponse toDetail(Milestone milestone);
 
     @Mapping(target = "id", ignore = true)
@@ -40,7 +45,7 @@ public interface MilestoneMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "kanban", ignore = true)
     @Mapping(target = "tasks", ignore = true)
-    void update(CreateMilestoneDTO dto,
+    void update(UpdateMilestoneDTO dto,
             @MappingTarget Milestone entity);
 
     default Integer totalTasks(Milestone milestone) {

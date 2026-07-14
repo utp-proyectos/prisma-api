@@ -1,9 +1,10 @@
-package pe.edu.utp.prisma_api.domain.checklist;
+package pe.edu.utp.prisma_api.domain.checklistItem;
 
 import java.util.UUID;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pe.edu.utp.prisma_api.domain.checklist.Checklist;
 
 @Data
 @Entity

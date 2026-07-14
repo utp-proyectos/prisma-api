@@ -1,6 +1,9 @@
 package pe.edu.utp.prisma_api.domain.task;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -15,12 +18,14 @@ import pe.edu.utp.prisma_api.domain.milestone.MilestoneRepository;
 import pe.edu.utp.prisma_api.domain.task.dto.CreateTaskDTO;
 import pe.edu.utp.prisma_api.domain.task.dto.ReorderTasksDTO;
 import pe.edu.utp.prisma_api.domain.task.dto.TaskDetailResponse;
+import pe.edu.utp.prisma_api.domain.task.dto.TaskOperationResult;
 import pe.edu.utp.prisma_api.domain.task.dto.TaskOrderDTO;
 import pe.edu.utp.prisma_api.domain.task.dto.UpdateTaskDTO;
 import pe.edu.utp.prisma_api.domain.user.User;
 import pe.edu.utp.prisma_api.domain.user.UserRepository;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -29,7 +34,15 @@ public class TaskService {
     private final UserRepository userRepository;
     private final TaskMapper mapper;
 
-    public TaskDetailResponse save(CreateTaskDTO dto) {
+    public List<TaskDetailResponse> findAllByKanbanId(UUID kanbanId) {
+        return mapper.toDto(taskRepository.findAllByKanbanId(kanbanId));
+    }
+
+    public Optional<TaskDetailResponse> findById(UUID id) {
+        return taskRepository.findById(id).map(mapper::toDetail);
+    }
+
+    public TaskOperationResult save(CreateTaskDTO dto) {
 
         ColumnKanban column = columnRepository.findById(dto.getColumnId())
                 .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
@@ -58,16 +71,27 @@ public class TaskService {
 
         Task saved = taskRepository.save(task);
 
-        return mapper.toDetail(saved);
+        Set<UUID> affected = new HashSet<>();
+
+        if (saved.getMilestone() != null) {
+            affected.add(saved.getMilestone().getId());
+        }
+
+        return new TaskOperationResult(
+                mapper.toDetail(saved),
+                affected);
     }
 
-    @Transactional
-    public TaskDetailResponse update(UpdateTaskDTO dto) {
+    public TaskOperationResult update(UpdateTaskDTO dto) {
 
         Task task = taskRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada"));
 
         UUID oldColumnId = task.getColumn().getId();
+
+        UUID oldMilestoneId = task.getMilestone() != null
+                ? task.getMilestone().getId()
+                : null;
 
         mapper.update(dto, task);
 
@@ -135,29 +159,73 @@ public class TaskService {
 
         Task updated = taskRepository.save(task);
 
-        return mapper.toDetail(updated);
+        Set<UUID> affected = new HashSet<>();
+
+        if (oldMilestoneId != null) {
+            affected.add(oldMilestoneId);
+        }
+
+        if (updated.getMilestone() != null) {
+            affected.add(updated.getMilestone().getId());
+        }
+
+        return new TaskOperationResult(
+                mapper.toDetail(updated),
+                affected);
     }
 
-    @Transactional
-    public void reorderTasks(ReorderTasksDTO dto) {
+    public TaskOperationResult delete(UUID id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada"));
+
+        Set<UUID> affected = new HashSet<>();
+
+        if (task.getMilestone() != null) {
+            affected.add(task.getMilestone().getId());
+        }
+
+        TaskDetailResponse dto = mapper.toDetail(task);
+
+        taskRepository.delete(task);
+
+        return new TaskOperationResult(dto, affected);
+    }
+
+    public TaskOperationResult reorderTasks(ReorderTasksDTO dto) {
         Task movedTask = taskRepository.findById(dto.getTaskId())
                 .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada"));
 
-        if (!movedTask.getColumn().getId().equals(dto.getTargetColumnId())) {
-            ColumnKanban targetColumn = columnRepository.findById(dto.getTargetColumnId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Columna no encontrada"));
-            movedTask.setColumn(targetColumn);
+        UUID oldColumnId = movedTask.getColumn().getId();
+        UUID targetColumnId = dto.getTargetColumnId();
 
-            if (targetColumn.isFixed()) {
-                movedTask.setCompleted(true);
-            } else {
-                movedTask.setCompleted(false);
-            }
+        Set<UUID> affected = new HashSet<>();
+
+        if (movedTask.getMilestone() != null) {
+            affected.add(movedTask.getMilestone().getId());
+        }
+
+        if (!oldColumnId.equals(targetColumnId)) {
+            ColumnKanban targetColumn = columnRepository.findById(targetColumnId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Columna destino no encontrada"));
+
+            movedTask.setColumn(targetColumn);
+            movedTask.setCompleted(targetColumn.isFixed());
             taskRepository.save(movedTask);
         }
 
         for (TaskOrderDTO taskDto : dto.getTargetTasks()) {
             taskRepository.updatePosition(taskDto.getId(), taskDto.getPosition());
         }
+
+        if (!oldColumnId.equals(targetColumnId)) {
+            List<Task> remainingTasks = taskRepository.findAllByColumnIdOrderByPosition(oldColumnId);
+            for (int i = 0; i < remainingTasks.size(); i++) {
+                taskRepository.updatePosition(remainingTasks.get(i).getId(), i);
+            }
+        }
+
+        return new TaskOperationResult(
+                null,
+                affected);
     }
 }

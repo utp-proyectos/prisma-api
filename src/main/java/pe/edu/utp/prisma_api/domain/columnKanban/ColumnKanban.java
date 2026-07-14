@@ -40,6 +40,6 @@ public class ColumnKanban {
     @JoinColumn(name = "kanban_id", nullable = false)
     private Kanban kanban;
 
-    @OneToMany(mappedBy = "column")
+    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 }

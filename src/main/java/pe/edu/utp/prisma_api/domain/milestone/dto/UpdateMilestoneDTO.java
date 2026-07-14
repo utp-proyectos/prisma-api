@@ -1,6 +1,7 @@
 package pe.edu.utp.prisma_api.domain.milestone.dto;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateMilestoneDTO {
+    private UUID milestoneId;
     private String title;
     private LocalDate deadline;
 }

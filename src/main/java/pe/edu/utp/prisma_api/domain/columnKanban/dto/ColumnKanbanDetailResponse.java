@@ -17,4 +17,8 @@ public class ColumnKanbanDetailResponse {
     private boolean fixed;
     private ColumnType type;
     private List<TaskDetailResponse> tasks;
+
+    private UUID kanbanId;
+    private UUID projectId;
+    private UUID teamId;
 }

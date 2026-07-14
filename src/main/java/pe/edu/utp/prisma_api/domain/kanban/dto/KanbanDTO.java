@@ -11,6 +11,6 @@ public class KanbanDTO {
     private UUID projectId;
     private UUID teamId;
     private String name;
-    private boolean isPrivate;
+    private boolean privateSwitch;
     private UUID creatorId;
 }

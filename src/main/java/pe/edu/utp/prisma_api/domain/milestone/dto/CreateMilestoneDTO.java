@@ -12,6 +12,4 @@ public class CreateMilestoneDTO {
     private String title;
     private LocalDate deadline;
     private UUID kanbanId;
-    private UUID projectId;
-    private UUID teamId;
 }

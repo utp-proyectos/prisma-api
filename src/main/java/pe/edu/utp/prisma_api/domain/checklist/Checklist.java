@@ -7,6 +7,7 @@ import java.util.UUID;
 import jakarta.persistence.*;
 import lombok.*;
 import pe.edu.utp.prisma_api.common.enums.Priority;
+import pe.edu.utp.prisma_api.domain.checklistItem.ChecklistItem;
 import pe.edu.utp.prisma_api.domain.task.Task;
 
 @Getter
@@ -33,6 +34,6 @@ public class Checklist {
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
-    @OneToMany(mappedBy = "checklist")
+    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChecklistItem> items = new ArrayList<>();
 }

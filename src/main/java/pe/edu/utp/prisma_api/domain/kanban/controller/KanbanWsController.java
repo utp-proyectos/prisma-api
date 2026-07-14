@@ -34,11 +34,11 @@ public class KanbanWsController {
                         Principal principal) {
 
                 UUID creatorId = UUID.fromString(principal.getName());
-                UUID projectId = dto.getProjectId();
 
-                KanbanDTO nuevoKanban = kanbanService.save(projectId, creatorId, dto);
+                KanbanDTO nuevoKanban = kanbanService.save(dto.getProjectId(), creatorId, dto);
 
-                String destinationTopic = "/topic/" + nuevoKanban.getTeamId() + "/" + projectId + "/kanbans";
+                String destinationTopic = "/topic/" + nuevoKanban.getTeamId() + "/" + nuevoKanban.getProjectId()
+                                + "/kanbans";
 
                 redisPublisher.publish(destinationTopic, new WsResponse<>(
                                 WsAction.CREATE,
@@ -46,12 +46,14 @@ public class KanbanWsController {
         }
 
         @MessageMapping("/kanban.update")
-        public void updateKanban(@Valid @Payload UpdateKanbanDTO dto, Principal principal) {
+        public void updateKanban(@Valid @Payload UpdateKanbanDTO dto) {
 
                 KanbanDTO kanbanActualizado = kanbanService.update(dto.getKanbanId(), dto)
                                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
-                String destinationTopic = "/topic/project/" + kanbanActualizado.getProjectId() + "/kanbans";
+                String destinationTopic = "/topic/" + kanbanActualizado.getTeamId() + "/"
+                                + kanbanActualizado.getProjectId()
+                                + "/kanbans";
 
                 redisPublisher.publish(destinationTopic, new WsResponse<>(
                                 WsAction.UPDATE,
@@ -63,12 +65,16 @@ public class KanbanWsController {
                         @Payload DeleteKanbanDTO dto,
                         Principal principal) {
 
-                KanbanDetailResponse kanban = kanbanService.findById(dto.getKanbanId())
+                UUID creatorId = UUID.fromString(principal.getName());
+
+                KanbanDetailResponse kanban = kanbanService.findById(dto.getKanbanId(), creatorId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
                 kanbanService.delete(dto.getKanbanId());
 
-                String destinationTopic = "/topic/project/" + kanban.getProjectId() + "/kanbans";
+                String destinationTopic = "/topic/" + kanban.getTeamId() + "/"
+                                + kanban.getProjectId()
+                                + "/kanbans";
 
                 redisPublisher.publish(destinationTopic, new WsResponse<>(
                                 WsAction.DELETE,

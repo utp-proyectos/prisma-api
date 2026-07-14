@@ -6,7 +6,6 @@ import lombok.*;
 
 @Getter
 @Setter
-public class CreateColumnKanbanDTO {
-    private String title;
-    private UUID kanbanId;
+public class DeleteColumnKanbanDTO {
+    private UUID columnId;
 }

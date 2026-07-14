@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import pe.edu.utp.prisma_api.common.response.ApiResponse;
 import pe.edu.utp.prisma_api.domain.kanban.KanbanService;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanMyTasksResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,22 +25,34 @@ public class KanbanController {
 
         @GetMapping("/api/projects/{projectId}/kanbans")
         public ResponseEntity<ApiResponse<List<KanbanDTO>>> findAllByProject(
-                        @PathVariable UUID projectId) {
+                        @PathVariable UUID projectId,
+                        @AuthenticationPrincipal UUID userId) {
 
                 return ResponseEntity.ok(
                                 ApiResponse.ok(
-                                                kanbanService.findAllByProjectId(projectId)));
+                                                kanbanService.findAllByProjectId(projectId, userId)));
         }
 
         @GetMapping("/api/kanbans/{kanbanId}")
         public ResponseEntity<ApiResponse<KanbanDetailResponse>> findById(
-                        @PathVariable UUID kanbanId) {
+                        @PathVariable UUID kanbanId, @AuthenticationPrincipal UUID userId) {
 
-                KanbanDetailResponse kanban = kanbanService.findById(kanbanId)
+                KanbanDetailResponse kanban = kanbanService.findById(kanbanId, userId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Kanban no encontrado"));
 
                 return ResponseEntity.ok(
                                 ApiResponse.ok(kanban));
+        }
+
+        @GetMapping("/api/kanbans/tasks")
+        public ResponseEntity<ApiResponse<List<KanbanMyTasksResponse>>> findMyTasks(
+                        @AuthenticationPrincipal UUID userId) {
+
+                System.out.println("User ID: " + userId);
+
+                return ResponseEntity.ok(
+                                ApiResponse.ok(
+                                                kanbanService.getMyKanbans(userId)));
         }
 
 }

@@ -9,5 +9,5 @@ import lombok.*;
 public class UpdateKanbanDTO {
     private UUID kanbanId;
     private String name;
-    private boolean isPrivate;
+    private boolean privateSwitch;
 }

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import lombok.*;
 import pe.edu.utp.prisma_api.common.enums.Priority;
-import pe.edu.utp.prisma_api.domain.checklist.dto.ChecklistDTO;
+import pe.edu.utp.prisma_api.domain.checklist.dto.ChecklistDetailResponse;
 
 @Getter
 @Setter
@@ -34,5 +34,5 @@ public class TaskDetailResponse {
 
     private List<TaskAssignmentDTO> assignments;
 
-    private List<ChecklistDTO> checklists;
+    private List<ChecklistDetailResponse> checklists;
 }

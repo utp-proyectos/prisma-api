@@ -1,15 +1,17 @@
 package pe.edu.utp.prisma_api.domain.task;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pe.edu.utp.prisma_api.domain.user.User;
 
 import java.util.UUID;
 
 import jakarta.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

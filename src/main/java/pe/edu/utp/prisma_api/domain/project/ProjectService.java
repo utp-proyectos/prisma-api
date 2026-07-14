@@ -1,5 +1,8 @@
 package pe.edu.utp.prisma_api.domain.project;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -9,6 +12,7 @@ import pe.edu.utp.prisma_api.domain.channel.ChannelRepository;
 import pe.edu.utp.prisma_api.domain.project.dto.CreateProjectRequest;
 import pe.edu.utp.prisma_api.domain.project.dto.ProjectResponse;
 import pe.edu.utp.prisma_api.domain.team.Team;
+import pe.edu.utp.prisma_api.domain.team.TeamMemberRepository;
 import pe.edu.utp.prisma_api.domain.team.TeamRepository;
 
 @Service
@@ -17,6 +21,14 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
     private final ChannelRepository channelRepository;
+    private final TeamMemberRepository teamMemberRepository;
+    private final ProjectMapper projectMapper;
+
+    public List<ProjectResponse> findAllByTeamId(UUID teamId, UUID userId) {
+        List<Project> projects = projectRepository.findByTeamId(teamId);
+
+        return projectMapper.toDtoList(projects);
+    }
 
     public ProjectResponse createProject(CreateProjectRequest request) {
         Team team = teamRepository.findById(request.getTeamId())
