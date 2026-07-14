@@ -12,15 +12,15 @@ import io.lettuce.core.dynamic.annotation.Param;
 
 public interface KanbanRepository extends JpaRepository<Kanban, UUID> {
 
-    List<Kanban> findByProjectId(UUID projectId);
+        List<Kanban> findByProjectId(UUID projectId);
 
-    @EntityGraph(attributePaths = {
-            "project",
-            "project.team"
-    })
-    Optional<Kanban> findWithProjectAndTeamById(UUID id);
+        @EntityGraph(attributePaths = {
+                        "project",
+                        "project.team"
+        })
+        Optional<Kanban> findWithProjectAndTeamById(UUID id);
 
-    // Trae tableros que sean públicos O privados pero que pertenezcan al usuario
-    @Query("SELECT k FROM Kanban k WHERE k.project.id = :projectId AND (k.isPrivate = false OR k.creator.id = :userId)")
-    List<Kanban> findByProjectIdAndAuthorizedUser(@Param("projectId") UUID projectId, @Param("userId") UUID userId);
+        // Trae tableros que sean públicos O privados pero que pertenezcan al usuario
+        @Query("SELECT k FROM Kanban k WHERE k.project.id = :projectId AND (k.isPrivate = false OR k.creator.id = :userId)")
+        List<Kanban> findByProjectIdAndAuthorizedUser(@Param("projectId") UUID projectId, @Param("userId") UUID userId);
 }

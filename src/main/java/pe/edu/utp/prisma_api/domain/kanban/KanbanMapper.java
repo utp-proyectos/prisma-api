@@ -10,12 +10,17 @@ import pe.edu.utp.prisma_api.domain.columnKanban.ColumnKanbanMapper;
 import pe.edu.utp.prisma_api.domain.kanban.dto.CreateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanMyTasksResponse;
 import pe.edu.utp.prisma_api.domain.kanban.dto.UpdateKanbanDTO;
 import pe.edu.utp.prisma_api.domain.milestone.MilestoneMapper;
+import pe.edu.utp.prisma_api.domain.task.Task;
+import pe.edu.utp.prisma_api.domain.task.TaskMapper;
 
 @Mapper(componentModel = "spring", uses = {
                 ColumnKanbanMapper.class,
-                MilestoneMapper.class
+                MilestoneMapper.class,
+                TaskMapper.class
+
 })
 public interface KanbanMapper {
 
@@ -50,4 +55,12 @@ public interface KanbanMapper {
         @Mapping(target = "private", source = "privateSwitch")
         void update(UpdateKanbanDTO dto,
                         @MappingTarget Kanban entity);
+
+        @Mapping(target = "id", source = "kanban.id")
+        @Mapping(target = "name", source = "kanban.name")
+        @Mapping(target = "tasks", source = "tasks")
+        KanbanMyTasksResponse toMyTasksResponse(
+                        Kanban kanban,
+                        List<Task> tasks);
+
 }

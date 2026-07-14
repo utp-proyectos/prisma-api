@@ -65,4 +65,16 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Query("SELECT t FROM Task t WHERE t.column.id = :columnId ORDER BY t.position")
     List<Task> findAllByColumnIdOrderByPosition(@Param("columnId") UUID columnId);
+
+    @Query("""
+            select distinct t
+            from Task t
+            join fetch t.column c
+            join fetch c.kanban k
+            left join fetch t.assignments a
+            left join fetch a.user u
+            where u.id = :userId
+            """)
+    List<Task> findTasksByUserIdWithKanban(@Param("userId") UUID userId);
+
 }
