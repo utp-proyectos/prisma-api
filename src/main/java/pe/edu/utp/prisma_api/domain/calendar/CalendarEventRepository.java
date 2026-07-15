@@ -1,5 +1,6 @@
 package pe.edu.utp.prisma_api.domain.calendar;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,13 +18,22 @@ public interface CalendarEventRepository extends JpaRepository<CalendarEvent, UU
         Optional<CalendarEvent> findByIdAndProject_IdAndActiveTrue(UUID id, UUID projectId);
 
         @Query("SELECT e FROM CalendarEvent e " +
-                "WHERE e.project.id = :projectId " +
-                "AND e.active = true " +
-                "AND e.startDate <= :endDate " +
-                "AND e.endDate >= :startDate " +
-                "ORDER BY e.startDate ASC")
+                        "WHERE e.project.id = :projectId " +
+                        "AND e.active = true " +
+                        "AND e.startDate <= :endDate " +
+                        "AND e.endDate >= :startDate " +
+                        "ORDER BY e.startDate ASC")
         List<CalendarEvent> findByProjectAndDateRange(
-                @Param("projectId") UUID projectId,
-                @Param("startDate") LocalDate startDate,
-                @Param("endDate") LocalDate endDate);
+                        @Param("projectId") UUID projectId,
+                        @Param("startDate") LocalDate startDate,
+                        @Param("endDate") LocalDate endDate);
+
+        @EntityGraph(attributePaths = { "createdBy" })
+        @Query("SELECT e FROM CalendarEvent e " +
+                        "WHERE e.project.id = :projectId " +
+                        "AND e.active = true " +
+                        "AND :today BETWEEN e.startDate AND e.endDate " +
+                        "ORDER BY e.startTime ASC")
+        List<CalendarEvent> findActiveEventsForToday(@Param("projectId") UUID projectId,
+                        @Param("today") LocalDate today);
 }

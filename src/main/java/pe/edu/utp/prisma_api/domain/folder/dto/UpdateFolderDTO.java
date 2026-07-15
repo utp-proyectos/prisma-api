@@ -7,10 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FolderRequestDTO {
-  private String name;
-  private Boolean isPrivate;
-  private UUID projectId;
+public class UpdateFolderDTO {
+  private UUID folderId;
   private UUID teamId;
-  private UUID creatorId;
+  private UUID projectId;
+  private String name;
 }

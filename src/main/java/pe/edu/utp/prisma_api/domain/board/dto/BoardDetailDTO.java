@@ -11,4 +11,5 @@ public class BoardDetailDTO {
   private UUID id;
   private Boolean isPrivate;
   private UUID folderId;
+  private UUID creatorId;
 }

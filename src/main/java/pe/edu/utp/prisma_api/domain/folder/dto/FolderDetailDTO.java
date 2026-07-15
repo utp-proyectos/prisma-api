@@ -18,4 +18,6 @@ public class FolderDetailDTO {
   private List<BoardResponseDTO> boards; // pizarras dentro del folder
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private UUID creatorId;
+
 }

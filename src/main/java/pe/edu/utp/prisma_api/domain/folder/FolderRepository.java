@@ -9,4 +9,5 @@ public interface FolderRepository extends JpaRepository<Folder, UUID> {
 
   List<Folder> findByProjectIdAndIsPrivate(UUID projectId, boolean isPrivate);
 
+  List<Folder> findByProjectIdAndIsPrivateAndCreatorId(UUID projectId, boolean isPrivate, UUID creatorId);
 }

@@ -17,4 +17,5 @@ public class FolderResponseDTO {
   private List<BoardResponseDTO> boards;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private UUID creatorId;
 }

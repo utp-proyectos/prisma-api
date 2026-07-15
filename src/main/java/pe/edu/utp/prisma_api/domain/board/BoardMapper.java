@@ -14,11 +14,13 @@ public interface BoardMapper {
   @Mapping(source = "id", target = "id")
   @Mapping(source = "folder.id", target = "folderId")
   @Mapping(source = "private", target = "isPrivate")
+  @Mapping(source = "creator.id", target = "creatorId")
   BoardResponseDTO toResponse(Board board);
 
   @Mapping(source = "id", target = "id")
   @Mapping(source = "folder.id", target = "folderId")
   @Mapping(source = "private", target = "isPrivate")
+  @Mapping(source = "creator.id", target = "creatorId")
   BoardDetailDTO toDetailDto(Board board);
 
   @Mapping(target = "id", ignore = true)
@@ -28,5 +30,6 @@ public interface BoardMapper {
   @Mapping(target = "thumbnailUrl", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "creator", ignore = true)
   void toEntity(BoardRequestDTO dto, @MappingTarget Board board);
 }

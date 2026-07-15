@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import pe.edu.utp.prisma_api.domain.columnKanban.enums.ColumnType;
 import pe.edu.utp.prisma_api.domain.task.Task;
 import pe.edu.utp.prisma_api.domain.task.TaskRepository;
 
@@ -85,8 +84,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     public List<CalendarEvent> findEventsByProjectAndDateRange(
             UUID projectId,
             LocalDate startDate,
-            LocalDate endDate
-    ) {
+            LocalDate endDate) {
         return repository.findByProjectAndDateRange(projectId, startDate, endDate);
     }
 
@@ -94,15 +92,13 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     public List<CalendarItemDTO> getCalendarItems(
             UUID projectId,
             LocalDate startDate,
-            LocalDate endDate
-    ) {
+            LocalDate endDate) {
         List<CalendarItemDTO> calendarItems = new ArrayList<>();
 
         List<CalendarEvent> events = repository.findByProjectAndDateRange(
                 projectId,
                 startDate,
-                endDate
-        );
+                endDate);
 
         for (CalendarEvent event : events) {
             calendarItems.add(convertEventToCalendarItem(event));
@@ -111,8 +107,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         List<Task> deadlines = taskRepository.findDeadlinesByProjectAndDateRange(
                 projectId,
                 startDate,
-                endDate
-        );
+                endDate);
 
         for (Task task : deadlines) {
             calendarItems.add(convertTaskToCalendarItem(task));

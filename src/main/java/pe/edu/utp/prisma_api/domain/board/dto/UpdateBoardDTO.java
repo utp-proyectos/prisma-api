@@ -8,10 +8,8 @@ import lombok.Setter;
 @Setter
 public class UpdateBoardDTO {
   private UUID boardId;
+  private UUID teamId;
   private UUID projectId;
   private String name;
   private String description;
-  private Boolean isPrivate;
-  private UUID folderId;
-  private UUID teamId;
 }
