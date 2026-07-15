@@ -15,6 +15,7 @@ import pe.edu.utp.prisma_api.common.response.ApiResponse;
 import pe.edu.utp.prisma_api.domain.kanban.KanbanService;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDTO;
 import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanDetailResponse;
+import pe.edu.utp.prisma_api.domain.kanban.dto.KanbanMyTasksResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +42,17 @@ public class KanbanController {
 
                 return ResponseEntity.ok(
                                 ApiResponse.ok(kanban));
+        }
+
+        @GetMapping("/api/kanbans/tasks")
+        public ResponseEntity<ApiResponse<List<KanbanMyTasksResponse>>> findMyTasks(
+                        @AuthenticationPrincipal UUID userId) {
+
+                System.out.println("User ID: " + userId);
+
+                return ResponseEntity.ok(
+                                ApiResponse.ok(
+                                                kanbanService.getMyKanbans(userId)));
         }
 
 }

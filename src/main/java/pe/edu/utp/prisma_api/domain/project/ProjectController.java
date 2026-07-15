@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.common.response.ApiResponse;
 import pe.edu.utp.prisma_api.domain.project.dto.CreateProjectRequest;
+import pe.edu.utp.prisma_api.domain.project.dto.ProjectDashboardResponse;
 import pe.edu.utp.prisma_api.domain.project.dto.ProjectResponse;
 
 @RestController
@@ -33,6 +34,16 @@ public class ProjectController {
     List<ProjectResponse> proyectos = projectService.findAllByTeamId(teamId, userId);
 
     return ResponseEntity.ok(ApiResponse.ok("Proyectos del equipo obtenidos con éxito", proyectos));
+  }
+
+  @GetMapping("/{projectId}/dashboard")
+  public ResponseEntity<ApiResponse<ProjectDashboardResponse>> getProjectDashboard(
+      @PathVariable UUID projectId,
+      @AuthenticationPrincipal UUID userId) {
+
+    ProjectDashboardResponse dashboardData = projectService.getProjectDashboard(projectId, userId);
+
+    return ResponseEntity.ok(ApiResponse.ok("Dashboard obtenido con éxito", dashboardData));
   }
 
   @PostMapping
