@@ -2,6 +2,7 @@ package pe.edu.utp.prisma_api.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
@@ -19,13 +20,16 @@ import tools.jackson.databind.json.JsonMapper;
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+  @Value("${frontend.url}")
+  private String frontendUrl;
+
   private final JsonMapper jsonMapper;
   private final WebSocketChannelInterceptor channelInterceptor;
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/ws")
-        .setAllowedOriginPatterns("http://localhost:4200")
+        .setAllowedOriginPatterns(frontendUrl)
         .withSockJS();
   }
 
