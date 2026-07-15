@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.domain.folder.dto.DeleteFolderDTO;
 import pe.edu.utp.prisma_api.domain.folder.dto.FolderRequestDTO;
 import pe.edu.utp.prisma_api.domain.folder.dto.FolderResponseDTO;
+import pe.edu.utp.prisma_api.domain.folder.dto.UpdateFolderDTO;
 import pe.edu.utp.prisma_api.infraestructure.redis.RedisPublisher;
 
 @Controller
@@ -42,5 +43,11 @@ public class FolderWsController {
     folderService.delete(dto.getFolderId());
 
     redisPublisher.publish("/topic/" + dto.getTeamId() + "/project/" + dto.getProjectId() + "/folders/delete", dto);
+  }
+
+  @MessageMapping("/folder.update")
+  public void updateFolder(@Payload UpdateFolderDTO dto, Principal principal) {
+    FolderResponseDTO folder = folderService.update(dto.getFolderId(), dto);
+    redisPublisher.publish("/topic/" + dto.getTeamId() + "/project/" + dto.getProjectId() + "/folders", folder);
   }
 }

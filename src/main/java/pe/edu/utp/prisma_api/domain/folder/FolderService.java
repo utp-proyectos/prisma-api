@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import pe.edu.utp.prisma_api.domain.folder.dto.FolderRequestDTO;
 import pe.edu.utp.prisma_api.domain.folder.dto.FolderResponseDTO;
+import pe.edu.utp.prisma_api.domain.folder.dto.UpdateFolderDTO;
 import pe.edu.utp.prisma_api.domain.project.Project;
 import pe.edu.utp.prisma_api.domain.project.ProjectRepository;
 
@@ -48,7 +49,7 @@ public class FolderService {
   }
 
   // UPDATE
-  public FolderResponseDTO update(UUID id, FolderRequestDTO dto) {
+  public FolderResponseDTO update(UUID id, UpdateFolderDTO dto) {
     Folder folder = findEntityById(id);
     folder.setName(dto.getName());
     return folderMapper.toResponse(folderRepository.save(folder));

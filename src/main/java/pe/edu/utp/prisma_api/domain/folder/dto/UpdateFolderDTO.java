@@ -1,15 +1,15 @@
-package pe.edu.utp.prisma_api.domain.board.dto;
+package pe.edu.utp.prisma_api.domain.folder.dto;
 
 import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateBoardDTO {
-  private UUID boardId;
+public class UpdateFolderDTO {
+  private UUID folderId;
   private UUID teamId;
   private UUID projectId;
   private String name;
-  private String description;
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import pe.edu.utp.prisma_api.domain.board.dto.BoardDetailDTO;
 import pe.edu.utp.prisma_api.domain.board.dto.BoardRequestDTO;
 import pe.edu.utp.prisma_api.domain.board.dto.BoardResponseDTO;
+import pe.edu.utp.prisma_api.domain.board.dto.UpdateBoardDTO;
 import pe.edu.utp.prisma_api.domain.folder.Folder;
 import pe.edu.utp.prisma_api.domain.folder.FolderRepository;
 import pe.edu.utp.prisma_api.domain.project.Project;
@@ -59,9 +60,10 @@ public class BoardService {
   }
 
   // UPDATE
-  public BoardResponseDTO update(UUID id, BoardRequestDTO dto) {
+  public BoardResponseDTO update(UUID id, UpdateBoardDTO dto) {
     Board board = findEntityById(id);
     board.setName(dto.getName());
+    board.setDescription(dto.getDescription());
     return boardMapper.toResponse(boardRepository.save(board));
   }
 
