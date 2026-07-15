@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,19 +31,26 @@ public class BoardController {
   @PostMapping("/api/projects/{projectId}/boards")
   public ResponseEntity<BoardResponseDTO> create(
       @PathVariable UUID projectId,
+      @AuthenticationPrincipal UUID userId,
       @RequestBody BoardRequestDTO dto) {
-    BoardResponseDTO board = boardService.create(projectId, dto);
+
+    // Enviamos el userId como creador al servicio
+    BoardResponseDTO board = boardService.create(projectId, userId, dto);
+
     String topic = "/topic/" + dto.getTeamId() + "/project/" + projectId + "/boards";
     System.out.println("Publicando en: " + topic);
-    redisPublisher.publish("/topic/" + dto.getTeamId() + "/project/" + projectId + "/boards", board);
+    redisPublisher.publish(topic, board);
+
     return ResponseEntity.ok(board);
   }
 
   @GetMapping("/api/projects/{projectId}/boards")
   public ResponseEntity<List<BoardResponseDTO>> getAll(
       @PathVariable UUID projectId,
-      @RequestParam Boolean isPrivate) {
-    return ResponseEntity.ok(boardService.getAll(projectId, isPrivate));
+      @RequestParam Boolean isPrivate,
+      @AuthenticationPrincipal UUID userId) {
+
+    return ResponseEntity.ok(boardService.getAll(projectId, isPrivate, userId));
   }
 
   @GetMapping("/api/boards/{boardId}")

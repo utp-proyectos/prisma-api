@@ -12,5 +12,5 @@ public class FolderRequestDTO {
   private Boolean isPrivate;
   private UUID projectId;
   private UUID teamId;
-
+  private UUID creatorId;
 }

@@ -13,6 +13,7 @@ public interface FolderMapper {
 
   @Mapping(source = "private", target = "isPrivate")
   @Mapping(source = "boards", target = "boards")
+  @Mapping(source = "creator.id", target = "creatorId")
   FolderResponseDTO toResponse(Folder folder);
 
   @Mapping(target = "id", ignore = true)
@@ -21,5 +22,6 @@ public interface FolderMapper {
   @Mapping(target = "private", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "creator", ignore = true)
   void toEntity(FolderRequestDTO dto, @MappingTarget Folder folder);
 }

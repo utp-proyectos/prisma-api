@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,23 +20,16 @@ public class FolderController {
   private final FolderService folderService;
 
   @GetMapping("/api/projects/{projectId}/folders")
-
   public ResponseEntity<List<FolderResponseDTO>> getAll(
       @PathVariable UUID projectId,
-      @RequestParam Boolean isPrivate) {
-    return ResponseEntity.ok(folderService.getAll(projectId, isPrivate));
+      @RequestParam Boolean isPrivate,
+      @AuthenticationPrincipal UUID userId) {
+    return ResponseEntity.ok(folderService.getAll(projectId, isPrivate, userId));
   }
 
   @GetMapping("/api/folders/{folderId}")
   public ResponseEntity<FolderResponseDTO> findById(@PathVariable UUID folderId) {
     return ResponseEntity.ok(folderService.findById(folderId));
   }
-
-  // @PutMapping("/api/folders/{folderId}")
-  // public ResponseEntity<FolderResponseDTO> update(
-  // @PathVariable UUID folderId,
-  // @RequestBody FolderRequestDTO dto) {
-  // return ResponseEntity.ok(folderService.update(folderId, dto));
-  // }
 
 }

@@ -29,10 +29,13 @@ public class FolderWsController {
       Principal principal) {
 
     UUID projectId = dto.getProjectId();
-    FolderResponseDTO folder = folderService.create(projectId, dto);
+
+    UUID creatorId = UUID.fromString(principal.getName());
+    FolderResponseDTO folder = folderService.create(projectId, creatorId, dto);
+
     String topic = "/topic/" + dto.getTeamId() + "/project/" + projectId + "/folders";
     System.out.println("Publicando en: " + topic);
-    redisPublisher.publish("/topic/" + dto.getTeamId() + "/project/" + dto.getProjectId() + "/folders", folder);
+    redisPublisher.publish(topic, folder);
   }
 
   @MessageMapping("/folder.delete")
