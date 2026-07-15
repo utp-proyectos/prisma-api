@@ -12,7 +12,6 @@ import pe.edu.utp.prisma_api.domain.channel.ChannelRepository;
 import pe.edu.utp.prisma_api.domain.project.dto.CreateProjectRequest;
 import pe.edu.utp.prisma_api.domain.project.dto.ProjectResponse;
 import pe.edu.utp.prisma_api.domain.team.Team;
-import pe.edu.utp.prisma_api.domain.team.TeamMemberRepository;
 import pe.edu.utp.prisma_api.domain.team.TeamRepository;
 
 @Service
@@ -21,7 +20,6 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
     private final ChannelRepository channelRepository;
-    private final TeamMemberRepository teamMemberRepository;
     private final ProjectMapper projectMapper;
 
     public List<ProjectResponse> findAllByTeamId(UUID teamId, UUID userId) {

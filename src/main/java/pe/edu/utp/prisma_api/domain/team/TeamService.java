@@ -67,6 +67,9 @@ public class TeamService {
 						p.getCreatedAt()))
 				.toList();
 
-		return new TeamDetailResponse(team.getId(), team.getName(), members, projects);
+		TeamMember member = teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
+				.orElseThrow(() -> new ResourceNotFoundException("No perteneces a este equipo"));
+
+		return new TeamDetailResponse(team.getId(), team.getName(), members, projects, member.getRole());
 	}
 }
