@@ -24,6 +24,21 @@
       "name": "frontend.url",
       "type": "java.lang.String",
       "description": "A description for 'frontend.url'"
+    },
+    {
+      "name": "google.api.client-id",
+      "type": "java.lang.String",
+      "description": "A description for 'google.api.client-id'"
+    },
+    {
+      "name": "google.api.client-secret",
+      "type": "java.lang.String",
+      "description": "A description for 'google.api.client-id'"
+    },
+    {
+      "name": "google.api.refresh-token",
+      "type": "java.lang.String",
+      "description": "A description for 'google.api.client-id'"
     }
   ]
 }
